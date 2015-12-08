@@ -1,5 +1,9 @@
-5 + 6
-printf("toto \n")
-print(5+6)
-print(5*30)
+printf("calcul 10 / 4 : \n")
+printf("resultat donne : ")
+print(10 / 4)
+printf("\n")
+printf("calcul 5 - 7 : \n")
+printf("resultat donne : ")
+print(5 - 7)
+printf("\n")
 

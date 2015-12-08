@@ -52,6 +52,19 @@ void creat_mips(struct symbol** tds,struct quad* code){
 				fputs(lol->res->id,output);
 				fputs("\n",output);
 				break;
+			//cas soustraction
+			case 1 : 
+				fputs("lw $t0,",output);
+				fputs(lol->arg1->id,output);
+				fputs("\n",output);
+				fputs("lw $t1,",output);
+				fputs(lol->arg2->id,output);
+				fputs("\n",output);
+				fputs("sub $t2,$t0,$t1\n",output);
+				fputs("sw $t2,",output);
+				fputs(lol->res->id,output);
+				fputs("\n",output);
+				break;
 			//cas multiplication
 			case 2 :
 				fputs("lw $t0,",output);
@@ -61,6 +74,19 @@ void creat_mips(struct symbol** tds,struct quad* code){
 				fputs(lol->arg2->id,output);
 				fputs("\n",output);
 				fputs("mul $t2,$t0,$t1\n",output);
+				fputs("sw $t2,",output);
+				fputs(lol->res->id,output);
+				fputs("\n",output);
+				break;
+			//cas division
+			case 3 :
+				fputs("lw $t0,",output);
+				fputs(lol->arg1->id,output);
+				fputs("\n",output);
+				fputs("lw $t1,",output);
+				fputs(lol->arg2->id,output);
+				fputs("\n",output);
+				fputs("div $t2,$t0,$t1\n",output);
 				fputs("sw $t2,",output);
 				fputs(lol->res->id,output);
 				fputs("\n",output);
