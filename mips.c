@@ -15,12 +15,14 @@ void creat_mips(struct symbol** tds,struct quad* code){
 	{
 		
 		fputs(scan->id,output);
+		//si c'est une chaine de caracteres, on fait .asciiz
 		if(scan->str_value!=NULL)
 		{
 			fputs(": .asciiz ",output);
 			fputs(scan->str_value,output);
 			fputs("\n",output);
 		}
+		//sinon .word
 		else
 		{
 			fputs(": .word ",output);
