@@ -1,0 +1,8 @@
++ 12 12 temp -> temp = 12 + 12
+
+temp3 = temp1 + temp2
+
+lw $t0, temp1
+lw $t1, temp2
+add $t2,$t0,$t1
+sw $t2, temp3
