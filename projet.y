@@ -20,6 +20,7 @@ void yyerror(const char *s)
 %union{
 	int value;
 	char* string;
+	float nbfloat;
 	struct{
 		struct symbol* result;
 		struct quad* code;
@@ -33,7 +34,8 @@ void yyerror(const char *s)
 %token <string> ID
 %token <string> CHAINE
 %token <value> NUMBER
-%token PLUS MOINS MUL DIV PARGAU PARDRO PRINT PRINTF INT FLOAT
+%token <nbfloat> NBFLOAT
+%token PLUS MOINS MUL DIV PARGAU PARDRO PRINT PRINTF INT FLOAT MATRIX
 %token WHILE DO DONE IF THEN ELSE ENDIF AFFECT
 %token EQUAL SUPEQ INFEQ SUP INF AND OR NOT TRUE FALSE
 %type <codegen>	expr
@@ -105,11 +107,19 @@ statement:
                             chaine->str_value=$3;
                             quad_add(&$$.code, quad_malloc(_PRINTF,chaine,NULL,NULL));
                             }
-	| INT ID AFFECT expr	{	printf("affectation int \n");
+	| 
+	INT ID AFFECT expr	{	printf("affectation int \n");
 								$$.result	= symbol_add(&tds,$2);							
 								$$.code=NULL;
 								quad_add(&$$.code, quad_malloc(_AFFECT,$4.result,NULL,$$.result));
-							};
+							}
+	|
+	FLOAT ID AFFECT expr	{	printf("affectation float \n");
+								$$.result	= symbol_add(&tds,$2);							
+								$$.code=NULL;
+								quad_add(&$$.code, quad_malloc(_AFFECT,$4.result,NULL,$$.result));
+							}
+	;
 condition:
 	expr SUP expr { 
 		printf("contition -> expression > expression \n");
@@ -204,6 +214,11 @@ expr:
 	| NUMBER		{ 	printf("expr -> NUMBER\n");
 						$$.result = symbol_newtemp(&tds);
 						$$.result->value = $1;
+						$$.code = NULL;
+					}
+	| NBFLOAT		{ 	printf("expr -> FLOAT\n");
+						$$.result = symbol_newtemp(&tds);
+						$$.result->nbfloat = $1;
 						$$.code = NULL;
 					}
 	;

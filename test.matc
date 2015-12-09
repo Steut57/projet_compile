@@ -3,7 +3,11 @@ printf("resultat donne : ")
 print(10 / 4)
 printf("\n")
 int a = 5
-printf("valeur de a : ")
+float b = 6.0
+printf ("valeur de b : ")
+print(b)
+printf("\nvaleur de a : ")
 print(a)
 printf("\n")
+print(5+a)
 

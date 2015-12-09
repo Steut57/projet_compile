@@ -8,6 +8,7 @@ struct symbol* symbol_alloc(){
 	new->id = NULL;
 	new->isconstant = false;
 	new->value = 0;
+	new->nbfloat=0.0;
 	new->next = NULL;
 	return new;
 }

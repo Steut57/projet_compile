@@ -40,68 +40,72 @@
      ID = 258,
      CHAINE = 259,
      NUMBER = 260,
-     PLUS = 261,
-     MOINS = 262,
-     MUL = 263,
-     DIV = 264,
-     PARGAU = 265,
-     PARDRO = 266,
-     PRINT = 267,
-     PRINTF = 268,
-     INT = 269,
-     FLOAT = 270,
-     WHILE = 271,
-     DO = 272,
-     DONE = 273,
-     IF = 274,
-     THEN = 275,
-     ELSE = 276,
-     ENDIF = 277,
-     AFFECT = 278,
-     EQUAL = 279,
-     SUPEQ = 280,
-     INFEQ = 281,
-     SUP = 282,
-     INF = 283,
-     AND = 284,
-     OR = 285,
-     NOT = 286,
-     TRUE = 287,
-     FALSE = 288
+     NBFLOAT = 261,
+     PLUS = 262,
+     MOINS = 263,
+     MUL = 264,
+     DIV = 265,
+     PARGAU = 266,
+     PARDRO = 267,
+     PRINT = 268,
+     PRINTF = 269,
+     INT = 270,
+     FLOAT = 271,
+     MATRIX = 272,
+     WHILE = 273,
+     DO = 274,
+     DONE = 275,
+     IF = 276,
+     THEN = 277,
+     ELSE = 278,
+     ENDIF = 279,
+     AFFECT = 280,
+     EQUAL = 281,
+     SUPEQ = 282,
+     INFEQ = 283,
+     SUP = 284,
+     INF = 285,
+     AND = 286,
+     OR = 287,
+     NOT = 288,
+     TRUE = 289,
+     FALSE = 290
    };
 #endif
 /* Tokens.  */
 #define ID 258
 #define CHAINE 259
 #define NUMBER 260
-#define PLUS 261
-#define MOINS 262
-#define MUL 263
-#define DIV 264
-#define PARGAU 265
-#define PARDRO 266
-#define PRINT 267
-#define PRINTF 268
-#define INT 269
-#define FLOAT 270
-#define WHILE 271
-#define DO 272
-#define DONE 273
-#define IF 274
-#define THEN 275
-#define ELSE 276
-#define ENDIF 277
-#define AFFECT 278
-#define EQUAL 279
-#define SUPEQ 280
-#define INFEQ 281
-#define SUP 282
-#define INF 283
-#define AND 284
-#define OR 285
-#define NOT 286
-#define TRUE 287
-#define FALSE 288
+#define NBFLOAT 261
+#define PLUS 262
+#define MOINS 263
+#define MUL 264
+#define DIV 265
+#define PARGAU 266
+#define PARDRO 267
+#define PRINT 268
+#define PRINTF 269
+#define INT 270
+#define FLOAT 271
+#define MATRIX 272
+#define WHILE 273
+#define DO 274
+#define DONE 275
+#define IF 276
+#define THEN 277
+#define ELSE 278
+#define ENDIF 279
+#define AFFECT 280
+#define EQUAL 281
+#define SUPEQ 282
+#define INFEQ 283
+#define SUP 284
+#define INF 285
+#define AND 286
+#define OR 287
+#define NOT 288
+#define TRUE 289
+#define FALSE 290
 
 
 
@@ -115,6 +119,7 @@ typedef union YYSTYPE
 
 	int value;
 	char* string;
+	float nbfloat;
 	struct{
 		struct symbol* result;
 		struct quad* code;
@@ -128,7 +133,7 @@ typedef union YYSTYPE
 
 
 /* Line 2068 of yacc.c  */
-#line 132 "y.tab.h"
+#line 137 "y.tab.h"
 } YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */

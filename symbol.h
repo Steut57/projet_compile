@@ -8,6 +8,7 @@ struct symbol{
 	char* id;
 	bool isconstant;
 	int value;
+	float nbfloat;
 	char* str_value;
 	struct symbol* next;
 };

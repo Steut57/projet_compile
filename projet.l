@@ -8,6 +8,7 @@
 %}
 
 identifier	[a-zA-Z_]+[0-9a-zA-Z_]*
+nbfloat     [0-9]+\.[0-9]+
 number     	[0-9]+
 chaine		\"(\\.|[^\"\\])*\"
 %%
@@ -23,6 +24,7 @@ chaine		\"(\\.|[^\"\\])*\"
 "printf"	{return PRINTF;}
 "int"		{return INT;}
 "float"		{return FLOAT;}
+"matrix"	{return MATRIX;}
 
 "=="		{return EQUAL;}
 ">="		{return SUPEQ;}
@@ -44,6 +46,7 @@ chaine		\"(\\.|[^\"\\])*\"
 
 {identifier}   	{yylval.string = strdup(yytext);return ID;}
 {number}      	{yylval.value = atoi(yytext); return NUMBER; }
+{nbfloat}		{yylval.nbfloat = atoi(yytext); return NBFLOAT; }
 {chaine}	{yylval.string = strdup(yytext);return CHAINE;}
 [\n]		{}	
 .          	{}
