@@ -33,7 +33,7 @@ void yyerror(const char *s)
 %token <string> ID
 %token <string> CHAINE
 %token <value> NUMBER
-%token PLUS MOINS MUL DIV PARGAU PARDRO PRINT PRINTF
+%token PLUS MOINS MUL DIV PARGAU PARDRO PRINT PRINTF INT FLOAT
 %token WHILE DO DONE IF THEN ELSE ENDIF AFFECT
 %token EQUAL SUPEQ INFEQ SUP INF AND OR NOT TRUE FALSE
 %type <codegen>	expr
@@ -104,7 +104,12 @@ statement:
                             struct symbol *chaine=symbol_newtemp(&tds);
                             chaine->str_value=$3;
                             quad_add(&$$.code, quad_malloc(_PRINTF,chaine,NULL,NULL));
-                            };
+                            }
+	| INT ID AFFECT expr	{	printf("affectation int \n");
+								$$.result	= symbol_add(&tds,$2);							
+								$$.code=NULL;
+								quad_add(&$$.code, quad_malloc(_AFFECT,$4.result,NULL,$$.result));
+							};
 condition:
 	expr SUP expr { 
 		printf("contition -> expression > expression \n");
@@ -190,8 +195,10 @@ expr:
 						$$.result	= $2.result;
 						$$.code	= $2.code;
 					}
+
+	
 	| ID			{ 	printf("expr -> ID\n");
-						$$.result	= symbol_add(&tds,$1);
+						$$.result	= symbol_lookup(&tds,$1);
 						$$.code	= NULL;
 					}
 	| NUMBER		{ 	printf("expr -> NUMBER\n");

@@ -45,3 +45,19 @@ void symbol_print(struct symbol** tds){
 		}
 	}
 }
+
+struct symbol* symbol_lookup(struct symbol** tds, char* id)
+{
+	struct symbol* lol = *tds;
+	while(lol!=NULL)
+	{
+		if (strcmp(lol->id,id)==0)
+		{
+			return lol;
+		}	
+		lol=lol->next;
+	}
+	return NULL;
+}
+		
+		

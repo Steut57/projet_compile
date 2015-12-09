@@ -4,7 +4,7 @@
   #include <stdio.h>
   #include <string.h>
   #include "y.tab.h"
-
+  
 %}
 
 identifier	[a-zA-Z_]+[0-9a-zA-Z_]*
@@ -21,6 +21,8 @@ chaine		\"(\\.|[^\"\\])*\"
 "="		{return AFFECT;}
 "print"		{return PRINT;}
 "printf"	{return PRINTF;}
+"int"		{return INT;}
+"float"		{return FLOAT;}
 
 "=="		{return EQUAL;}
 ">="		{return SUPEQ;}

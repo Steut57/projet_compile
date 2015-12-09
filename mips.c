@@ -39,10 +39,12 @@ void creat_mips(struct symbol** tds,struct quad* code){
 	while(lol != NULL)
 	{
 		int operateur=lol->op;
+		printf("operateur2 : %i \n",operateur);
 		switch(operateur)
 		{
+			
 			//cas addition
-			case 0 : 
+			case _PLUS : 
 				fputs("lw $t0,",output);
 				fputs(lol->arg1->id,output);
 				fputs("\n",output);
@@ -55,7 +57,7 @@ void creat_mips(struct symbol** tds,struct quad* code){
 				fputs("\n",output);
 				break;
 			//cas soustraction
-			case 1 : 
+			case _MOINS : 
 				fputs("lw $t0,",output);
 				fputs(lol->arg1->id,output);
 				fputs("\n",output);
@@ -68,7 +70,7 @@ void creat_mips(struct symbol** tds,struct quad* code){
 				fputs("\n",output);
 				break;
 			//cas multiplication
-			case 2 :
+			case _MUL :
 				fputs("lw $t0,",output);
 				fputs(lol->arg1->id,output);
 				fputs("\n",output);
@@ -81,7 +83,7 @@ void creat_mips(struct symbol** tds,struct quad* code){
 				fputs("\n",output);
 				break;
 			//cas division
-			case 3 :
+			case _DIV :
 				fputs("lw $t0,",output);
 				fputs(lol->arg1->id,output);
 				fputs("\n",output);
@@ -94,25 +96,36 @@ void creat_mips(struct symbol** tds,struct quad* code){
 				fputs("\n",output);
 				break;
 			//cas print	
-			case 6 :
+			case _PRINT :
 				fputs("li $v0,1\n",output);
-				fputs("move $a0,$t2\n",output);
+				fputs("lw $a0,",output);
+				fputs(lol->arg1->id,output);
+				fputs("\n",output);
 				fputs("syscall\n",output);
 				break;
 			//cas printf
-			case 7 :
+			case _PRINTF :
 				fputs("li $v0,4\n",output);
 				fputs("la $a0,",output);
 				fputs(lol->arg1->id,output);
 				fputs("\n",output);
 				fputs("syscall\n",output);
 				break;
+			//cas affectation
+			case _AFFECT :
+				fputs("lw $t0,",output);
+				fputs(lol->arg1->id,output);
+				fputs("\n",output);
+				fputs("sw $t0,",output);
+				fputs(lol->res->id,output);
+				fputs("\n",output);	
+				break;
 			default : 
 				break;
 		}		
 		lol=lol->next;
 	}
-	//printf("operateur2 : %i",lol->op);
+	
 	
 
 	fputs("li $v0,10\n",output);

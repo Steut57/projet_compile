@@ -2,8 +2,8 @@ printf("calcul 10 / 4 : \n")
 printf("resultat donne : ")
 print(10 / 4)
 printf("\n")
-printf("calcul 5 - 7 : \n")
-printf("resultat donne : ")
-print(5 - 7)
+int a = 5
+printf("valeur de a : ")
+print(a)
 printf("\n")
 

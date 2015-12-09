@@ -48,24 +48,26 @@
      PARDRO = 266,
      PRINT = 267,
      PRINTF = 268,
-     WHILE = 269,
-     DO = 270,
-     DONE = 271,
-     IF = 272,
-     THEN = 273,
-     ELSE = 274,
-     ENDIF = 275,
-     AFFECT = 276,
-     EQUAL = 277,
-     SUPEQ = 278,
-     INFEQ = 279,
-     SUP = 280,
-     INF = 281,
-     AND = 282,
-     OR = 283,
-     NOT = 284,
-     TRUE = 285,
-     FALSE = 286
+     INT = 269,
+     FLOAT = 270,
+     WHILE = 271,
+     DO = 272,
+     DONE = 273,
+     IF = 274,
+     THEN = 275,
+     ELSE = 276,
+     ENDIF = 277,
+     AFFECT = 278,
+     EQUAL = 279,
+     SUPEQ = 280,
+     INFEQ = 281,
+     SUP = 282,
+     INF = 283,
+     AND = 284,
+     OR = 285,
+     NOT = 286,
+     TRUE = 287,
+     FALSE = 288
    };
 #endif
 /* Tokens.  */
@@ -80,24 +82,26 @@
 #define PARDRO 266
 #define PRINT 267
 #define PRINTF 268
-#define WHILE 269
-#define DO 270
-#define DONE 271
-#define IF 272
-#define THEN 273
-#define ELSE 274
-#define ENDIF 275
-#define AFFECT 276
-#define EQUAL 277
-#define SUPEQ 278
-#define INFEQ 279
-#define SUP 280
-#define INF 281
-#define AND 282
-#define OR 283
-#define NOT 284
-#define TRUE 285
-#define FALSE 286
+#define INT 269
+#define FLOAT 270
+#define WHILE 271
+#define DO 272
+#define DONE 273
+#define IF 274
+#define THEN 275
+#define ELSE 276
+#define ENDIF 277
+#define AFFECT 278
+#define EQUAL 279
+#define SUPEQ 280
+#define INFEQ 281
+#define SUP 282
+#define INF 283
+#define AND 284
+#define OR 285
+#define NOT 286
+#define TRUE 287
+#define FALSE 288
 
 
 
@@ -124,7 +128,7 @@ typedef union YYSTYPE
 
 
 /* Line 2068 of yacc.c  */
-#line 128 "y.tab.h"
+#line 132 "y.tab.h"
 } YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */
