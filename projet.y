@@ -219,9 +219,9 @@ expr:
 						$$.code = NULL;
 					}
 	| NBFLOAT		{ 	printf("expr -> FLOAT\n");
-						$$.result = symbol_newtemp(&tds);
-						$$.result->nbfloat = $1;
+						$$.result = symbol_newtemp(&tds);	
 						$$.result->type = 1;
+						$$.result->nbfloat = $1;
 						$$.code = NULL;
 					}
 	;

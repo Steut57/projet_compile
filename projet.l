@@ -46,7 +46,7 @@ chaine		\"(\\.|[^\"\\])*\"
 
 {identifier}   	{yylval.string = strdup(yytext);return ID;}
 {number}      	{yylval.value = atoi(yytext); return NUMBER; }
-{nbfloat}		{yylval.nbfloat = atoi(yytext); return NBFLOAT; }
+{nbfloat}		{yylval.nbfloat = atof(yytext); return NBFLOAT; }
 {chaine}	{yylval.string = strdup(yytext);return CHAINE;}
 [\n]		{}	
 .          	{}

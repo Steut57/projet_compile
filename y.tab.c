@@ -1762,9 +1762,9 @@ yyreduce:
 /* Line 1806 of yacc.c  */
 #line 221 "projet.y"
     { 	printf("expr -> FLOAT\n");
-						(yyval.codegen).result = symbol_newtemp(&tds);
-						(yyval.codegen).result->nbfloat = (yyvsp[(1) - (1)].nbfloat);
+						(yyval.codegen).result = symbol_newtemp(&tds);	
 						(yyval.codegen).result->type = 1;
+						(yyval.codegen).result->nbfloat = (yyvsp[(1) - (1)].nbfloat);
 						(yyval.codegen).code = NULL;
 					}
     break;

@@ -959,7 +959,7 @@ YY_RULE_SETUP
 case 32:
 YY_RULE_SETUP
 #line 49 "projet.l"
-{yylval.nbfloat = atoi(yytext); return NBFLOAT; }
+{yylval.nbfloat = atof(yytext); return NBFLOAT; }
 	YY_BREAK
 case 33:
 /* rule 33 can match eol */

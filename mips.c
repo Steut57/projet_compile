@@ -28,6 +28,7 @@ void creat_mips(struct symbol** tds,struct quad* code){
 			fputs(": .float ",output);
 			char buffer[16] = {0};
 			sprintf(buffer, "%f", scan->nbfloat);
+			printf("float : %f \n",scan->nbfloat);
 			fputs(buffer,output);
 			fputs("\n",output);	
 		}
@@ -49,8 +50,7 @@ void creat_mips(struct symbol** tds,struct quad* code){
 		int operateur=lol->op;
 		printf("operateur2 : %i \n",operateur);
 		switch(operateur)
-		{
-			
+		{	
 			//cas addition
 			case _PLUS : 
 				fputs("lw $t0,",output);
@@ -105,7 +105,7 @@ void creat_mips(struct symbol** tds,struct quad* code){
 				break;
 			//cas print	
 			case _PRINT :
-				if(lol->arg1->value!=0)
+				if(lol->arg1->type==0)
 				{
 					fputs("li $v0,1\n",output);
 					fputs("lw $a0,",output);
@@ -143,7 +143,7 @@ void creat_mips(struct symbol** tds,struct quad* code){
 					fputs("l.s $f0,",output);
 					fputs(lol->arg1->id,output);
 					fputs("\n",output);
-					fputs("sw $f0,",output);
+					fputs("s.s $f0,",output);
 					fputs(lol->res->id,output);
 					fputs("\n",output);	
 				}
