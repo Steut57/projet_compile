@@ -521,9 +521,9 @@ static const yytype_int8 yyrhs[] =
 /* YYRLINE[YYN] -- source line where rule number YYN was defined.  */
 static const yytype_uint8 yyrline[] =
 {
-       0,    59,    59,    64,    69,    73,    98,   103,   111,   117,
-     124,   137,   149,   157,   164,   173,   179,   185,   192,   198,
-     204,   210,   214,   219
+       0,    59,    59,    64,    69,    73,    98,   103,   112,   118,
+     125,   138,   150,   158,   165,   174,   180,   186,   193,   199,
+     205,   211,   215,   221
 };
 #endif
 
@@ -1519,9 +1519,9 @@ yyreduce:
 /* Line 1806 of yacc.c  */
 #line 73 "projet.y"
     {
-		struct symbol* cst_true  	= symbol_add(&tds,"1");
-		struct symbol* cst_false 	= symbol_add(&tds,"0");
-		struct symbol* result 		= symbol_add(&tds,"result");
+		struct symbol* cst_true  	= symbol_add(&tds,"1",2);
+		struct symbol* cst_false 	= symbol_add(&tds,"0",2);
+		struct symbol* result 		= symbol_add(&tds,"result",2);
 		struct quad* is_true;
 		struct quad* is_false;
 		struct quad* jump;
@@ -1563,6 +1563,7 @@ yyreduce:
                             (yyval.codegen).result = NULL;
                             struct symbol *chaine=symbol_newtemp(&tds);
                             chaine->str_value=(yyvsp[(3) - (4)].string);
+                            chaine->type=2;
                             quad_add(&(yyval.codegen).code, quad_malloc(_PRINTF,chaine,NULL,NULL));
                             }
     break;
@@ -1570,9 +1571,9 @@ yyreduce:
   case 8:
 
 /* Line 1806 of yacc.c  */
-#line 111 "projet.y"
+#line 112 "projet.y"
     {	printf("affectation int \n");
-								(yyval.codegen).result	= symbol_add(&tds,(yyvsp[(2) - (4)].string));							
+								(yyval.codegen).result	= symbol_add(&tds,(yyvsp[(2) - (4)].string),0);							
 								(yyval.codegen).code=NULL;
 								quad_add(&(yyval.codegen).code, quad_malloc(_AFFECT,(yyvsp[(4) - (4)].codegen).result,NULL,(yyval.codegen).result));
 							}
@@ -1581,9 +1582,9 @@ yyreduce:
   case 9:
 
 /* Line 1806 of yacc.c  */
-#line 117 "projet.y"
+#line 118 "projet.y"
     {	printf("affectation float \n");
-								(yyval.codegen).result	= symbol_add(&tds,(yyvsp[(2) - (4)].string));							
+								(yyval.codegen).result	= symbol_add(&tds,(yyvsp[(2) - (4)].string),1);							
 								(yyval.codegen).code=NULL;
 								quad_add(&(yyval.codegen).code, quad_malloc(_AFFECT,(yyvsp[(4) - (4)].codegen).result,NULL,(yyval.codegen).result));
 							}
@@ -1592,7 +1593,7 @@ yyreduce:
   case 10:
 
 /* Line 1806 of yacc.c  */
-#line 124 "projet.y"
+#line 125 "projet.y"
     { 
 		printf("contition -> expression > expression \n");
 		struct quad* goto_true;
@@ -1611,7 +1612,7 @@ yyreduce:
   case 11:
 
 /* Line 1806 of yacc.c  */
-#line 137 "projet.y"
+#line 138 "projet.y"
     {
 		printf("condition -> condition OR condition \n");
 		quad_list_complete((yyvsp[(1) - (4)].code_condition).falselist,(yyvsp[(3) - (4)].codegen).result);
@@ -1629,7 +1630,7 @@ yyreduce:
   case 12:
 
 /* Line 1806 of yacc.c  */
-#line 149 "projet.y"
+#line 150 "projet.y"
     {
 		printf("condition -> condition AND condition");
 		quad_list_complete((yyvsp[(1) - (4)].code_condition).falselist,(yyvsp[(3) - (4)].codegen).result);
@@ -1643,7 +1644,7 @@ yyreduce:
   case 13:
 
 /* Line 1806 of yacc.c  */
-#line 158 "projet.y"
+#line 159 "projet.y"
     {
 		printf("condition -> NOT condition \n");
 		(yyval.code_condition).code = (yyvsp[(2) - (2)].code_condition).code;
@@ -1655,7 +1656,7 @@ yyreduce:
   case 14:
 
 /* Line 1806 of yacc.c  */
-#line 165 "projet.y"
+#line 166 "projet.y"
     {
 		printf("condition -> ( condition )\n");
 		(yyval.code_condition).code = (yyvsp[(2) - (3)].code_condition).code;
@@ -1668,7 +1669,7 @@ yyreduce:
   case 15:
 
 /* Line 1806 of yacc.c  */
-#line 173 "projet.y"
+#line 174 "projet.y"
     { 	(yyval.codegen).result = symbol_newtemp(&tds);
 		(yyval.codegen).result->value = next_quad; // incrémenter dans malloc extern int 
 		(yyval.codegen).code = NULL;
@@ -1678,7 +1679,7 @@ yyreduce:
   case 16:
 
 /* Line 1806 of yacc.c  */
-#line 179 "projet.y"
+#line 180 "projet.y"
     { 	printf("expr -> expr + expr\n");
 						(yyval.codegen).result	= symbol_newtemp(&tds);
 						(yyval.codegen).code	= (yyvsp[(1) - (3)].codegen).code;
@@ -1690,7 +1691,7 @@ yyreduce:
   case 17:
 
 /* Line 1806 of yacc.c  */
-#line 185 "projet.y"
+#line 186 "projet.y"
     {
 						printf("expr -> expr - expr\n");
 						(yyval.codegen).result	= symbol_newtemp(&tds);
@@ -1703,7 +1704,7 @@ yyreduce:
   case 18:
 
 /* Line 1806 of yacc.c  */
-#line 192 "projet.y"
+#line 193 "projet.y"
     {	printf("expr -> expr * expr\n");
 						(yyval.codegen).result = symbol_newtemp(&tds);
 						(yyval.codegen).code = (yyvsp[(1) - (3)].codegen).code;
@@ -1715,7 +1716,7 @@ yyreduce:
   case 19:
 
 /* Line 1806 of yacc.c  */
-#line 198 "projet.y"
+#line 199 "projet.y"
     {	printf("expr -> expr * expr\n");
 						(yyval.codegen).result = symbol_newtemp(&tds);
 						(yyval.codegen).code = (yyvsp[(1) - (3)].codegen).code;
@@ -1727,7 +1728,7 @@ yyreduce:
   case 20:
 
 /* Line 1806 of yacc.c  */
-#line 204 "projet.y"
+#line 205 "projet.y"
     { 	printf("expr -> ( expr ) \n");
 						(yyval.codegen).result	= (yyvsp[(2) - (3)].codegen).result;
 						(yyval.codegen).code	= (yyvsp[(2) - (3)].codegen).code;
@@ -1737,7 +1738,7 @@ yyreduce:
   case 21:
 
 /* Line 1806 of yacc.c  */
-#line 210 "projet.y"
+#line 211 "projet.y"
     { 	printf("expr -> ID\n");
 						(yyval.codegen).result	= symbol_lookup(&tds,(yyvsp[(1) - (1)].string));
 						(yyval.codegen).code	= NULL;
@@ -1747,10 +1748,11 @@ yyreduce:
   case 22:
 
 /* Line 1806 of yacc.c  */
-#line 214 "projet.y"
+#line 215 "projet.y"
     { 	printf("expr -> NUMBER\n");
 						(yyval.codegen).result = symbol_newtemp(&tds);
 						(yyval.codegen).result->value = (yyvsp[(1) - (1)].value);
+						(yyval.codegen).result->type = 0;
 						(yyval.codegen).code = NULL;
 					}
     break;
@@ -1758,10 +1760,11 @@ yyreduce:
   case 23:
 
 /* Line 1806 of yacc.c  */
-#line 219 "projet.y"
+#line 221 "projet.y"
     { 	printf("expr -> FLOAT\n");
 						(yyval.codegen).result = symbol_newtemp(&tds);
 						(yyval.codegen).result->nbfloat = (yyvsp[(1) - (1)].nbfloat);
+						(yyval.codegen).result->type = 1;
 						(yyval.codegen).code = NULL;
 					}
     break;
@@ -1769,7 +1772,7 @@ yyreduce:
 
 
 /* Line 1806 of yacc.c  */
-#line 1773 "y.tab.c"
+#line 1776 "y.tab.c"
       default: break;
     }
   /* User semantic actions sometimes alter yychar, and that requires
@@ -2000,7 +2003,7 @@ yyreturn:
 
 
 /* Line 2067 of yacc.c  */
-#line 225 "projet.y"
+#line 228 "projet.y"
 
 
 int main(int argc, char* argv[])

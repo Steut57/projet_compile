@@ -9,6 +9,7 @@ struct symbol* symbol_alloc(){
 	new->isconstant = false;
 	new->value = 0;
 	new->next = NULL;
+	new->type=_entier;
 	return new;
 }
 struct symbol* symbol_newtemp(struct symbol** tds){
@@ -16,13 +17,14 @@ struct symbol* symbol_newtemp(struct symbol** tds){
 	char temp_name[SYMBOL_MAX_NAME];
 	snprintf(temp_name,SYMBOL_MAX_NAME,"temp_%d",nb_symbol);
 	nb_symbol++;
-	return symbol_add(tds,temp_name);
+	return symbol_add(tds,temp_name,_entier);
 }
 
-struct symbol* symbol_add(struct symbol** tds, char* id){
+struct symbol* symbol_add(struct symbol** tds, char* id,int type){
 	if(*tds == NULL){
 		*tds = symbol_alloc();
 		(*tds)->id = strdup(id);
+		(*tds)->type = type;
 		return *tds;
 	}else{
 		struct symbol* scan = *tds;
@@ -30,6 +32,7 @@ struct symbol* symbol_add(struct symbol** tds, char* id){
 			scan = scan->next;
 		scan->next = symbol_alloc();
 		scan->next->id = strdup(id);
+		scan->next->type=type;
 		return scan->next;
 	}
 }

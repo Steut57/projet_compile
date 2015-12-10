@@ -71,9 +71,9 @@ statement:
 	}
 	|
 	condition '\n'{
-		struct symbol* cst_true  	= symbol_add(&tds,"1");
-		struct symbol* cst_false 	= symbol_add(&tds,"0");
-		struct symbol* result 		= symbol_add(&tds,"result");
+		struct symbol* cst_true  	= symbol_add(&tds,"1",2);
+		struct symbol* cst_false 	= symbol_add(&tds,"0",2);
+		struct symbol* result 		= symbol_add(&tds,"result",2);
 		struct quad* is_true;
 		struct quad* is_false;
 		struct quad* jump;
@@ -105,17 +105,18 @@ statement:
                             $$.result = NULL;
                             struct symbol *chaine=symbol_newtemp(&tds);
                             chaine->str_value=$3;
+                            chaine->type=2;
                             quad_add(&$$.code, quad_malloc(_PRINTF,chaine,NULL,NULL));
                             }
 	| 
 	INT ID AFFECT expr	{	printf("affectation int \n");
-								$$.result	= symbol_add(&tds,$2);							
+								$$.result	= symbol_add(&tds,$2,0);							
 								$$.code=NULL;
 								quad_add(&$$.code, quad_malloc(_AFFECT,$4.result,NULL,$$.result));
 							}
 	|
 	FLOAT ID AFFECT expr	{	printf("affectation float \n");
-								$$.result	= symbol_add(&tds,$2);							
+								$$.result	= symbol_add(&tds,$2,1);							
 								$$.code=NULL;
 								quad_add(&$$.code, quad_malloc(_AFFECT,$4.result,NULL,$$.result));
 							}
@@ -214,11 +215,13 @@ expr:
 	| NUMBER		{ 	printf("expr -> NUMBER\n");
 						$$.result = symbol_newtemp(&tds);
 						$$.result->value = $1;
+						$$.result->type = 0;
 						$$.code = NULL;
 					}
 	| NBFLOAT		{ 	printf("expr -> FLOAT\n");
 						$$.result = symbol_newtemp(&tds);
 						$$.result->nbfloat = $1;
+						$$.result->type = 1;
 						$$.code = NULL;
 					}
 	;

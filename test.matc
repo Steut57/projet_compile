@@ -1,13 +1,4 @@
-printf("calcul 10 / 4 : \n")
-printf("resultat donne : ")
-print(10 / 4)
-printf("\n")
-int a = 5
 float b = 6.0
 printf ("valeur de b : ")
 print(b)
-printf("\nvaleur de a : ")
-print(a)
-printf("\n")
-print(5+a)
 

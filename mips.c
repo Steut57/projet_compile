@@ -13,24 +13,23 @@ void creat_mips(struct symbol** tds,struct quad* code){
 	struct symbol* scan = *tds;
 	while(scan!= NULL)
 	{
-		
+		printf("type %i \n",scan->type);
 		fputs(scan->id,output);
 		//si c'est une chaine de caracteres, on fait .asciiz
-		if(scan->str_value!=NULL)
+		if(scan->type==_string)
 		{
 			fputs(": .asciiz ",output);
 			fputs(scan->str_value,output);
 			fputs("\n",output);
 		}
 		//sinon .word
-		else if (scan->nbfloat!=0.00000)
+		else if (scan->type==_flottant)
 		{
 			fputs(": .float ",output);
 			char buffer[16] = {0};
 			sprintf(buffer, "%f", scan->nbfloat);
 			fputs(buffer,output);
-			fputs("\n",output);
-			
+			fputs("\n",output);	
 		}
 		else
 		{
@@ -106,8 +105,16 @@ void creat_mips(struct symbol** tds,struct quad* code){
 				break;
 			//cas print	
 			case _PRINT :
-				fputs("li $v0,1\n",output);
-				fputs("lw $a0,",output);
+				if(lol->arg1->value!=0)
+				{
+					fputs("li $v0,1\n",output);
+					fputs("lw $a0,",output);
+				}
+				else
+				{
+					fputs("li $v0,2\n",output);
+					fputs("l.s $f12,",output);
+				}
 				fputs(lol->arg1->id,output);
 				fputs("\n",output);
 				fputs("syscall\n",output);
@@ -122,12 +129,24 @@ void creat_mips(struct symbol** tds,struct quad* code){
 				break;
 			//cas affectation
 			case _AFFECT :
-				fputs("lw $t0,",output);
-				fputs(lol->arg1->id,output);
-				fputs("\n",output);
-				fputs("sw $t0,",output);
-				fputs(lol->res->id,output);
-				fputs("\n",output);	
+				if(lol->arg1->type==_entier)
+				{
+					fputs("lw $t0,",output);
+					fputs(lol->arg1->id,output);
+					fputs("\n",output);
+					fputs("sw $t0,",output);
+					fputs(lol->res->id,output);
+					fputs("\n",output);	
+				}
+				else
+				{
+					fputs("l.s $f0,",output);
+					fputs(lol->arg1->id,output);
+					fputs("\n",output);
+					fputs("sw $f0,",output);
+					fputs(lol->res->id,output);
+					fputs("\n",output);	
+				}
 				break;
 			default : 
 				break;
