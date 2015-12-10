@@ -23,19 +23,20 @@ void creat_mips(struct symbol** tds,struct quad* code){
 			fputs("\n",output);
 		}
 		//sinon .word
-		else if (scan->value!=0)
-		{
-			fputs(": .word ",output);
-			char buffer[16] = {0};
-			sprintf(buffer, "%d", scan->value);
-			fputs(buffer,output);
-			fputs("\n",output);
-		}
-		else
+		else if (scan->nbfloat!=0.00000)
 		{
 			fputs(": .float ",output);
 			char buffer[16] = {0};
 			sprintf(buffer, "%f", scan->nbfloat);
+			fputs(buffer,output);
+			fputs("\n",output);
+			
+		}
+		else
+		{
+			fputs(": .word ",output);
+			char buffer[16] = {0};
+			sprintf(buffer, "%d", scan->value);
 			fputs(buffer,output);
 			fputs("\n",output);
 		}

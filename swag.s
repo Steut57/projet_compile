@@ -3,17 +3,17 @@ temp_0: .asciiz "calcul 10 / 4 : \n"
 temp_1: .asciiz "resultat donne : "
 temp_2: .word 10
 temp_3: .word 4
-temp_4: .float 0.000000
+temp_4: .word 0
 temp_5: .asciiz "\n"
 temp_6: .word 5
-a: .float 0.000000
+a: .word 0
 temp_7: .float 6.000000
-b: .float 0.000000
+b: .word 0
 temp_8: .asciiz "valeur de b : "
 temp_9: .asciiz "\nvaleur de a : "
 temp_10: .asciiz "\n"
 temp_11: .word 5
-temp_12: .float 0.000000
+temp_12: .word 0
 
 
 	.text
