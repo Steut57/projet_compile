@@ -4,7 +4,8 @@
 #include "symbol.h"
 #include "quad.h"
 
-struct quad* quad_malloc(	int op, 
+struct quad* quad_malloc(	int* label,
+							int op, 
 							struct symbol* arg1, 
 							struct symbol* arg2, 
 							struct symbol* res){
@@ -15,6 +16,10 @@ struct quad* quad_malloc(	int op,
 	new->arg2 		= arg2;
 	new->res  		= res;
 	new->next		= NULL;
+	
+	new->label		 = *label;
+	(*label)++;
+
 	return new;
 }
 
@@ -30,13 +35,52 @@ void quad_add(struct quad** list, struct quad* new){
 }
 void quad_print(struct quad* list){
 	while(list != NULL){
-		printf("%d ",list->op);
-		if(list->arg1 != NULL) printf(" %s ",list->arg1->id);
-		else printf(" vide ");
-		if(list->arg2 != NULL) printf(" %s ",list->arg2->id);
-		else printf(" vide ");
-		if(list->res != NULL) printf(" %s ",list->res->id);
-		else printf(" vide ");
+		
+		printf("%i lu\t", list->label);
+		char* s;
+		switch(list->op) {
+			case _EQ:
+				s = "==";
+				break;
+			case _GE:
+				s = ">=";
+				break;
+			case _LE:
+				s = "<=";
+				break;
+			case _NE:
+				s = "!=";
+				break;
+			case _AFFECT:
+				s = "=";
+				break;
+			case '<':
+				s = "<";
+				break;
+			case '>':
+				s = ">";
+				break;
+			case _PLUS:
+				s = "+";
+				break;
+			case _MOINS:
+				s = "-";
+				break;
+			case _GOTO:
+				s = "goto";
+				break;
+			default:
+				s = "UNKNOWN";
+		}
+		printf(" %s\t", s);
+		if(list->arg1 != NULL) printf("%s\t",list->arg1->id);
+		else printf("vide\t");
+		if(list->arg2 != NULL) printf("%s\t",list->arg2->id);
+		else printf("vide\t");
+		if(list->res != NULL) printf("%s\t",list->res->id);
+		else printf("vide\t");
+
+
 		printf("\n");
 		list = list->next;
 	}

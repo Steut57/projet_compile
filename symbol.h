@@ -1,26 +1,37 @@
 #include <stdbool.h>
 #define SYMBOL_MAX_NAME 64
-enum op{
-	_PLUS,_MOINS,_MUL,_DIV,_PARGAU,_PARDRO,_PRINT,_PRINTF,_WHILE,_DO,_DONE,_IF,
-	_THEN,_ELSE,_ENDIF,_AFFECT,	_EQUAL,_SUPEQ,_INFEQ,_SUP,_INF,_AND,_OR,_NOT,_TRUE,_FALSE
-};
+typedef enum {
+	_PLUS,_MOINS,_MUL,_DIV,_PARGAU,_PARDRO,_PRINT,_PRINTF,_WHILE,_DO,_DONE,_IF,_UNMIN,
+	_GOTO,_THEN,_ELSE,_ENDIF,_AFFECT,_EQ,_GE,_LE,_NE,_SUP,_INF,_AND,_OR,_NOT,_TRUE,_FALSE
+}op;
+typedef enum {
+	BOOLEAN_TYPE, 
+	INTEGER_TYPE, 
+	REAL_TYPE, 
+	COMPLEX_TYPE, 
+	ARRAY_TYPE,
+	FUNCTION_TYPE,
+	NO_TYPE
+} symbol_type;
 
-enum type{
-	_entier,_flottant,_string
-};
+typedef union {
+	char* string;
+	int integer;
+	float real;
+} value_union;
 
 struct symbol{
 	char* id;
-	bool isconstant;
-	int type;
-	int value;
-	float nbfloat;
-	char* str_value;
+	unsigned int label;
+	bool isconstant; 
+	symbol_type type;
+	value_union value;
+
 	struct symbol* next;
 };
 
 struct symbol* 	symbol_alloc();
-struct symbol* 	symbol_newtemp(struct symbol** tds);
-struct symbol* 	symbol_add(struct symbol** tds, char* id, int type);
+struct symbol* 	symbol_newtemp(struct symbol** tds,int next_quad);
+struct symbol* 	symbol_add(struct symbol** tds, char* id);
 void		symbol_print(struct symbol** tds);
-struct symbol* symbol_lookup(struct symbol** tds, char* id);
+struct symbol* symbol_lookup(struct symbol** tds,char* id);

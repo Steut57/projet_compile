@@ -2,14 +2,17 @@
 #define __QUAD_H__
 
 struct quad{
+	int label;
 	int op;
 	struct symbol* arg1;
 	struct symbol* arg2;
 	struct symbol* res;
+	
 	struct quad* next;
 };
 
-struct quad* quad_malloc(	int op, 
+struct quad* quad_malloc(	int* label,
+							int op, 
 							struct symbol* arg1, 
 							struct symbol* arg2, 
 							struct symbol* res);

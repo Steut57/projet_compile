@@ -1,19 +1,19 @@
-/* A Bison parser, made by GNU Bison 2.5.  */
+/* A Bison parser, made by GNU Bison 3.0.2.  */
 
 /* Bison interface for Yacc-like parsers in C
-   
-      Copyright (C) 1984, 1989-1990, 2000-2011 Free Software Foundation, Inc.
-   
+
+   Copyright (C) 1984, 1989-1990, 2000-2013 Free Software Foundation, Inc.
+
    This program is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
    the Free Software Foundation, either version 3 of the License, or
    (at your option) any later version.
-   
+
    This program is distributed in the hope that it will be useful,
    but WITHOUT ANY WARRANTY; without even the implied warranty of
    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
    GNU General Public License for more details.
-   
+
    You should have received a copy of the GNU General Public License
    along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
 
@@ -26,120 +26,113 @@
    special exception, which will cause the skeleton and the resulting
    Bison output files to be licensed under the GNU General Public
    License without this special exception.
-   
+
    This special exception was added by the Free Software Foundation in
    version 2.2 of Bison.  */
 
+#ifndef YY_YY_Y_TAB_H_INCLUDED
+# define YY_YY_Y_TAB_H_INCLUDED
+/* Debug traces.  */
+#ifndef YYDEBUG
+# define YYDEBUG 0
+#endif
+#if YYDEBUG
+extern int yydebug;
+#endif
 
-/* Tokens.  */
+/* Token type.  */
 #ifndef YYTOKENTYPE
 # define YYTOKENTYPE
-   /* Put the tokens into the symbol table, so that GDB and other debuggers
-      know about them.  */
-   enum yytokentype {
-     ID = 258,
-     CHAINE = 259,
-     NUMBER = 260,
-     NBFLOAT = 261,
-     PLUS = 262,
-     MOINS = 263,
-     MUL = 264,
-     DIV = 265,
-     PARGAU = 266,
-     PARDRO = 267,
-     PRINT = 268,
-     PRINTF = 269,
-     INT = 270,
-     FLOAT = 271,
-     MATRIX = 272,
-     WHILE = 273,
-     DO = 274,
-     DONE = 275,
-     IF = 276,
-     THEN = 277,
-     ELSE = 278,
-     ENDIF = 279,
-     AFFECT = 280,
-     EQUAL = 281,
-     SUPEQ = 282,
-     INFEQ = 283,
-     SUP = 284,
-     INF = 285,
-     AND = 286,
-     OR = 287,
-     NOT = 288,
-     TRUE = 289,
-     FALSE = 290
-   };
+  enum yytokentype
+  {
+    ID = 258,
+    CHAINE = 259,
+    NUMBER = 260,
+    MAIN = 261,
+    RETURN = 262,
+    PRINT = 263,
+    PRINTF = 264,
+    INT = 265,
+    FLOAT = 266,
+    MATRIX = 267,
+    IF = 268,
+    ELSE = 269,
+    WHILE = 270,
+    THEN = 271,
+    DO = 272,
+    DONE = 273,
+    ENDIF = 274,
+    IFX = 275,
+    GE = 276,
+    LE = 277,
+    EQ = 278,
+    NE = 279,
+    UNMIN = 280
+  };
 #endif
 /* Tokens.  */
 #define ID 258
 #define CHAINE 259
 #define NUMBER 260
-#define NBFLOAT 261
-#define PLUS 262
-#define MOINS 263
-#define MUL 264
-#define DIV 265
-#define PARGAU 266
-#define PARDRO 267
-#define PRINT 268
-#define PRINTF 269
-#define INT 270
-#define FLOAT 271
-#define MATRIX 272
-#define WHILE 273
-#define DO 274
-#define DONE 275
-#define IF 276
-#define THEN 277
-#define ELSE 278
-#define ENDIF 279
-#define AFFECT 280
-#define EQUAL 281
-#define SUPEQ 282
-#define INFEQ 283
-#define SUP 284
-#define INF 285
-#define AND 286
-#define OR 287
-#define NOT 288
-#define TRUE 289
-#define FALSE 290
+#define MAIN 261
+#define RETURN 262
+#define PRINT 263
+#define PRINTF 264
+#define INT 265
+#define FLOAT 266
+#define MATRIX 267
+#define IF 268
+#define ELSE 269
+#define WHILE 270
+#define THEN 271
+#define DO 272
+#define DONE 273
+#define ENDIF 274
+#define IFX 275
+#define GE 276
+#define LE 277
+#define EQ 278
+#define NE 279
+#define UNMIN 280
 
-
-
-
+/* Value type.  */
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
-typedef union YYSTYPE
+typedef union YYSTYPE YYSTYPE;
+union YYSTYPE
 {
+#line 21 "projet.y" /* yacc.c:1909  */
 
-/* Line 2068 of yacc.c  */
-#line 20 "projet.y"
-
-	int value;
-	char* string;
-	float nbfloat;
+	int val_num;
+	char* val_str;
+	struct symbol* code_jump;
 	struct{
 		struct symbol* result;
 		struct quad* code;
-	}codegen;
+	}code_expression;
 	struct{
-		struct quad* code;
-		struct quad_list* truelist;
-		struct quad_list* falselist;
+		struct quad * code ;
+		struct quad_list* truelist ;
+		struct quad_list* falselist ;
 	}code_condition;
+	struct{
+		struct quad* code ;
+		struct quad_list* nextlist;
+	}code_statement;
+	struct{
+		struct symbol* quad ;
+		struct quad* code ;
+		struct quad_list* nextlist;
+	}code_goto;
 
-
-
-/* Line 2068 of yacc.c  */
-#line 137 "y.tab.h"
-} YYSTYPE;
+#line 128 "y.tab.h" /* yacc.c:1909  */
+};
 # define YYSTYPE_IS_TRIVIAL 1
-# define yystype YYSTYPE /* obsolescent; will be withdrawn */
 # define YYSTYPE_IS_DECLARED 1
 #endif
 
+
 extern YYSTYPE yylval;
 
+int yyparse (void);
 
+#endif /* !YY_YY_Y_TAB_H_INCLUDED  */

@@ -7,24 +7,24 @@ struct symbol* symbol_alloc(){
 	struct symbol* new = malloc(sizeof(*new));
 	new->id = NULL;
 	new->isconstant = false;
-	new->value = 0;
+	
 	new->next = NULL;
-	new->type=_entier;
+	new->type = NO_TYPE;
+	
 	return new;
 }
-struct symbol* symbol_newtemp(struct symbol** tds){
+struct symbol* symbol_newtemp(struct symbol** tds,int next_quad){
 	static int nb_symbol = 0;
 	char temp_name[SYMBOL_MAX_NAME];
 	snprintf(temp_name,SYMBOL_MAX_NAME,"temp_%d",nb_symbol);
 	nb_symbol++;
-	return symbol_add(tds,temp_name,_entier);
+	return symbol_add(tds,temp_name);
 }
 
-struct symbol* symbol_add(struct symbol** tds, char* id,int type){
+struct symbol* symbol_add(struct symbol** tds, char* id){
 	if(*tds == NULL){
 		*tds = symbol_alloc();
 		(*tds)->id = strdup(id);
-		(*tds)->type = type;
 		return *tds;
 	}else{
 		struct symbol* scan = *tds;
@@ -32,7 +32,6 @@ struct symbol* symbol_add(struct symbol** tds, char* id,int type){
 			scan = scan->next;
 		scan->next = symbol_alloc();
 		scan->next->id = strdup(id);
-		scan->next->type=type;
 		return scan->next;
 	}
 }
@@ -48,19 +47,18 @@ void symbol_print(struct symbol** tds){
 		}
 	}
 }
+struct symbol* symbol_lookup(struct symbol** tds,char* id){
+	
+	struct symbol* result = NULL;
+	struct symbol* temp = *tds;
+	
+	while(temp != NULL ){
+		if(strcmp(temp->id, id) == 0){
+			result = temp;
+			break;
+		}
 
-struct symbol* symbol_lookup(struct symbol** tds, char* id)
-{
-	struct symbol* lol = *tds;
-	while(lol!=NULL)
-	{
-		if (strcmp(lol->id,id)==0)
-		{
-			return lol;
-		}	
-		lol=lol->next;
+		temp = temp->next;
 	}
-	return NULL;
+	return result;
 }
-		
-		
