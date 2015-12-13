@@ -177,12 +177,16 @@ expr:
 								//printf("YOLOLOLOOLO %d",$$.result->value.integer );
 								$$.code = NULL;
 							}
-	| ID					{	printf("expr -> ID\n");
-								if(symbol_lookup(&tds,$1)==NULL){
-								$$.result = symbol_newtemp(&tds,next_quad);
+	| ID					{	        
+								struct symbol* lookup = symbol_lookup(&tds,$1);
+								if(lookup==NULL){
+								 $$.result = symbol_newtemp(&tds,next_quad);
+								 $$.result->id = $1;
+								 $$.code = NULL;
 								}
-								$$.result->id = $1;
-								$$.code = NULL;
+								else{
+								 $$.result = lookup;
+								}
 							}
 	| '-' expr %prec UNMIN  {	printf("expr -> - expr\n");
 								$$.result	= symbol_newtemp(&tds,next_quad);
