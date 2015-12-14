@@ -16,27 +16,26 @@ void creat_mips(struct symbol** tds,struct quad* code){
 		printf("type %i \n",scan->type);
 		fputs(scan->id,output);
 		//si c'est une chaine de caracteres, on fait .asciiz
-		if(scan->type==_string)
+		if(scan->type==STRING_TYPE)
 		{
 			fputs(": .asciiz ",output);
-			fputs(scan->str_value,output);
+			fputs(scan->value.string,output);
 			fputs("\n",output);
 		}
 		//sinon .word
-		else if (scan->type==_flottant)
+		else if (scan->type==REAL_TYPE)
 		{
 			fputs(": .float ",output);
 			char buffer[16] = {0};
-			sprintf(buffer, "%f", scan->nbfloat);
-			printf("float : %f \n",scan->nbfloat);
+			sprintf(buffer, "%f", scan->value.real);
 			fputs(buffer,output);
 			fputs("\n",output);	
 		}
-		else
+		else 
 		{
 			fputs(": .word ",output);
 			char buffer[16] = {0};
-			sprintf(buffer, "%d", scan->value);
+			sprintf(buffer, "%d", scan->value.integer);
 			fputs(buffer,output);
 			fputs("\n",output);
 		}
@@ -105,15 +104,16 @@ void creat_mips(struct symbol** tds,struct quad* code){
 				break;
 			//cas print	
 			case _PRINT :
-				if(lol->arg1->type==0)
-				{
-					fputs("li $v0,1\n",output);
-					fputs("lw $a0,",output);
-				}
-				else
+				if(lol->arg1->type==REAL_TYPE)
 				{
 					fputs("li $v0,2\n",output);
 					fputs("l.s $f12,",output);
+				}
+				else
+				{
+					fputs("li $v0,1\n",output);
+					fputs("lw $a0,",output);
+					
 				}
 				fputs(lol->arg1->id,output);
 				fputs("\n",output);
@@ -129,16 +129,7 @@ void creat_mips(struct symbol** tds,struct quad* code){
 				break;
 			//cas affectation
 			case _AFFECT :
-				if(lol->arg1->type==_entier)
-				{
-					fputs("lw $t0,",output);
-					fputs(lol->arg1->id,output);
-					fputs("\n",output);
-					fputs("sw $t0,",output);
-					fputs(lol->res->id,output);
-					fputs("\n",output);	
-				}
-				else
+				if(lol->arg1->type==REAL_TYPE)
 				{
 					fputs("l.s $f0,",output);
 					fputs(lol->arg1->id,output);
@@ -146,6 +137,15 @@ void creat_mips(struct symbol** tds,struct quad* code){
 					fputs("s.s $f0,",output);
 					fputs(lol->res->id,output);
 					fputs("\n",output);	
+				}
+				else
+				{
+					fputs("lw $t0,",output);
+					fputs(lol->arg1->id,output);
+					fputs("\n",output);
+					fputs("sw $t0,",output);
+					fputs(lol->res->id,output);
+					fputs("\n",output);
 				}
 				break;
 			default : 

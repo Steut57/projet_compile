@@ -1,9 +1,9 @@
 int main (){
-x;
-x=3;
+int x=3;
 x=3+5;
-y;
-x=y+1;
-
+float z = 8.41;
+printf("lol\n");
+print(x);
+print(z);
 return 0;
 }

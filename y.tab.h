@@ -40,52 +40,54 @@
      ID = 258,
      CHAINE = 259,
      NUMBER = 260,
-     MAIN = 261,
-     RETURN = 262,
-     PRINT = 263,
-     PRINTF = 264,
-     INT = 265,
-     FLOAT = 266,
-     MATRIX = 267,
-     IF = 268,
-     ELSE = 269,
-     WHILE = 270,
-     THEN = 271,
-     DO = 272,
-     DONE = 273,
-     ENDIF = 274,
-     IFX = 275,
-     NE = 276,
-     EQ = 277,
-     LE = 278,
-     GE = 279,
-     UNMIN = 280
+     REAL = 261,
+     MAIN = 262,
+     RETURN = 263,
+     PRINT = 264,
+     PRINTF = 265,
+     INT = 266,
+     FLOAT = 267,
+     MATRIX = 268,
+     IF = 269,
+     ELSE = 270,
+     WHILE = 271,
+     THEN = 272,
+     DO = 273,
+     DONE = 274,
+     ENDIF = 275,
+     IFX = 276,
+     NE = 277,
+     EQ = 278,
+     LE = 279,
+     GE = 280,
+     UNMIN = 281
    };
 #endif
 /* Tokens.  */
 #define ID 258
 #define CHAINE 259
 #define NUMBER 260
-#define MAIN 261
-#define RETURN 262
-#define PRINT 263
-#define PRINTF 264
-#define INT 265
-#define FLOAT 266
-#define MATRIX 267
-#define IF 268
-#define ELSE 269
-#define WHILE 270
-#define THEN 271
-#define DO 272
-#define DONE 273
-#define ENDIF 274
-#define IFX 275
-#define NE 276
-#define EQ 277
-#define LE 278
-#define GE 279
-#define UNMIN 280
+#define REAL 261
+#define MAIN 262
+#define RETURN 263
+#define PRINT 264
+#define PRINTF 265
+#define INT 266
+#define FLOAT 267
+#define MATRIX 268
+#define IF 269
+#define ELSE 270
+#define WHILE 271
+#define THEN 272
+#define DO 273
+#define DONE 274
+#define ENDIF 275
+#define IFX 276
+#define NE 277
+#define EQ 278
+#define LE 279
+#define GE 280
+#define UNMIN 281
 
 
 
@@ -99,6 +101,7 @@ typedef union YYSTYPE
 
 	int val_num;
 	char* val_str;
+	float val_real;
 	struct symbol* code_jump;
 	struct{
 		struct symbol* result;
@@ -122,7 +125,7 @@ typedef union YYSTYPE
 
 
 /* Line 2068 of yacc.c  */
-#line 126 "y.tab.h"
+#line 129 "y.tab.h"
 } YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */

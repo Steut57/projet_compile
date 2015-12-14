@@ -11,6 +11,7 @@ typedef enum {
 	COMPLEX_TYPE, 
 	ARRAY_TYPE,
 	FUNCTION_TYPE,
+	STRING_TYPE,
 	NO_TYPE
 } symbol_type;
 

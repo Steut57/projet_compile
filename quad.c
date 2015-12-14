@@ -9,14 +9,14 @@ struct quad* quad_malloc(	int* label,
 							struct symbol* arg1, 
 							struct symbol* arg2, 
 							struct symbol* res){
-								
+
 	struct quad* new = malloc(sizeof(*new));
 	new->op		 	= op;
 	new->arg1 		= arg1;
 	new->arg2 		= arg2;
 	new->res  		= res;
 	new->next		= NULL;
-	
+
 	new->label		 = *label;
 	(*label)++;
 
@@ -33,6 +33,7 @@ void quad_add(struct quad** list, struct quad* new){
 		scan->next = new;
 	}
 }
+
 void quad_print(struct quad* list){
 	while(list != NULL){
 		
@@ -69,6 +70,12 @@ void quad_print(struct quad* list){
 			case _GOTO:
 				s = "goto";
 				break;
+			case _PRINT:
+				s = "print";
+				break;
+			case _PRINTF:
+				s="printf";
+				break;
 			default:
 				s = "UNKNOWN";
 		}
@@ -85,6 +92,7 @@ void quad_print(struct quad* list){
 		list = list->next;
 	}
 }
+
 
 struct quad_list* quad_list_new(struct quad* node){
 	struct quad_list* new = malloc(sizeof(struct quad_list));

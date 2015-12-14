@@ -9,6 +9,7 @@
 
 identifier	[a-zA-Z_]+[0-9a-zA-Z_]*
 number     	[0-9]+
+real		[0-9]+\.[0-9]+
 chaine		\"(\\.|[^\"\\])*\"
 %%
 "main"			{return MAIN;}
@@ -30,6 +31,7 @@ chaine		\"(\\.|[^\"\\])*\"
 "if"            {return IF;}
 "else"          {return ELSE;}
 "print"         {return PRINT;}
+"printf"        {return PRINTF;}
 "then"			{return THEN;}
 "do"			{return DO;}
 "done"			{return DONE;}
@@ -39,6 +41,7 @@ chaine		\"(\\.|[^\"\\])*\"
 
 {identifier}   	{yylval.val_str = strdup(yytext);return ID;}
 {number}     	{yylval.val_num = atoi(yytext);return NUMBER;}
+{real}			{yylval.val_real = atof(yytext);return REAL;}
 {chaine}		{yylval.val_str = strdup(yytext);return CHAINE;}
 
 %%

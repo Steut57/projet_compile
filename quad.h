@@ -7,7 +7,6 @@ struct quad{
 	struct symbol* arg1;
 	struct symbol* arg2;
 	struct symbol* res;
-	
 	struct quad* next;
 };
 

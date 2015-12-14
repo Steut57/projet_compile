@@ -21,6 +21,7 @@ void yyerror(const char *s)
 %union{
 	int val_num;
 	char* val_str;
+	float val_real;
 	struct symbol* code_jump;
 	struct{
 		struct symbol* result;
@@ -50,6 +51,8 @@ void yyerror(const char *s)
 %token <val_str> ID
 %token <val_str> CHAINE
 %token <val_num> NUMBER
+%token <val_real> REAL
+
 
 %token MAIN RETURN PRINT PRINTF
 %token INT FLOAT MATRIX
@@ -91,18 +94,44 @@ stmt:
 	| PRINTF '(' CHAINE ')' ';'   					{
 														$$.code   = NULL;
 														struct symbol* chaine=symbol_newtemp(&tds,next_quad);
-														chaine->value.string=$3;
+														chaine->type=STRING_TYPE;
+														chaine->value.string=$3;														
 														quad_add(&$$.code, quad_malloc(&next_quad,_PRINTF,chaine,NULL,NULL));
 													}
 	| ID '=' expr ';'								{	printf("id = expr\n");
 														struct symbol* lookup = symbol_lookup(&tds,$1);
 														if(lookup == NULL) {
-															printf("mmmh le caca c'est très bon \n");
+															printf("Cet identifiant n'existe pas \n");
 														}else{
 															$$.code = $3.code;
 															quad_add(&$$.code,quad_malloc(&next_quad,_AFFECT,$3.result,NULL,lookup));
 														}
 													}
+	| INT ID '=' expr ';'	{	printf("affectation int \n");
+								
+							struct symbol* lookup = symbol_lookup(&tds,$2);
+							if(lookup == NULL) {
+								struct symbol* newID = symbol_add(&tds,$2);
+								newID->type=INTEGER_TYPE;
+								$$.code=$4.code;
+								quad_add(&$$.code,quad_malloc(&next_quad,_AFFECT,$4.result,NULL,newID));
+							}else{								
+								printf("Cet identifiant existe deja\n");
+							}
+							
+						}
+	| FLOAT ID '=' expr	';'{	printf("affectation float \n");
+							struct symbol* lookup = symbol_lookup(&tds,$2);
+							if(lookup == NULL) {
+								struct symbol* newID = symbol_add(&tds,$2);
+								newID->type=REAL_TYPE;	
+								$$.code=$4.code;
+								quad_add(&$$.code,quad_malloc(&next_quad,_AFFECT,$4.result,NULL,newID));
+							}else{								
+								printf("Cet identifiant existe deja\n");
+							}
+							
+						}
 	| WHILE tag '(' condition ')' tag stmt			{printf("WHILE '(' expr ')' stmt\n");}
 	| IF '(' condition ')' tag stmt %prec IFX		{	printf("IF '(' expr ')' stmt ENDIF \n");
 														
@@ -139,17 +168,19 @@ stmt:
 condition:
 	expr '<' expr			{printf("expr -> expr '<' expr\n");
 							}
-	| expr '>' expr			{	printf("expr -> expr '>' expr\n");
+	| expr '>' expr			{	
+								printf("expr -> expr '>' expr\n");
 								struct quad* goto_true;
 								struct quad* goto_false;
 								quad_add(&goto_true,  quad_malloc(&next_quad,_SUP,$1.result,$3.result,NULL));
 								quad_add(&goto_false, quad_malloc(&next_quad,'G',NULL,NULL,NULL));
+								$$.truelist		= quad_list_new(goto_true);
+								$$.falselist	= quad_list_new(goto_false);
 								$$.code		= $1.code;
 								quad_add(&$$.code, $3.code);
 								quad_add(&$$.code, goto_true);
 								quad_add(&$$.code, goto_false);
-								$$.truelist		= quad_list_new(goto_true);
-								$$.falselist	= quad_list_new(goto_false);
+
 							}
 	| expr GE expr        	{printf("expr -> expr '>=' expr\n");
 							}
@@ -174,7 +205,14 @@ expr:
 								$$.result->type = INTEGER_TYPE;
 								$$.result->isconstant = true;
 								$$.result->value.integer = $1;
-								//printf("YOLOLOLOOLO %d",$$.result->value.integer );
+								$$.code = NULL;
+							}
+	|REAL					{	printf("expr -> REAL\n");
+								
+								$$.result = symbol_newtemp(&tds,next_quad);
+								$$.result->type = REAL_TYPE;
+								$$.result->isconstant = true;							
+								$$.result->value.real = $1;							
 								$$.code = NULL;
 							}
 	| ID					{	        
@@ -236,5 +274,5 @@ int main(int argc, char* argv[])
 	printf("\nCode\n");
 	quad_print(code);
 	
-	//creat_mips(&tds,code);
+	creat_mips(&tds,code);
 }
