@@ -5,6 +5,8 @@ x=3;
 y;
 y=x;
 print(x);
-int z[8];
+int z[2];
+z[O]=1;
+z[1]=2;
 return 0;
 }

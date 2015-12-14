@@ -119,6 +119,16 @@ stmt:
 														tab->id=$2;
 														//quad_add(&$$.code,quad_malloc(&next_quad,_ARRAY,NULL,NULL,tab);
 													}
+	| ID '[' NUMBER ']' '=' expr ';'			{
+												printf("assignation\n");
+												struct symbol* lookup = symbol_lookup(&tds,$1);
+												if(lookup == NULL) {
+													printf("mmmh le caca c'est très bon \n");
+												}else{
+													$$.code = $6.code;
+													quad_add(&$$.code,quad_malloc(&next_quad,_ARRAY_AFFECT,$3.result,$6,$1.result));
+												}
+											}
 	| WHILE tag '(' condition ')' tag stmt			{printf("WHILE '(' expr ')' stmt\n");}
 	| IF '(' condition ')' tag stmt %prec IFX		{	printf("IF '(' expr ')' stmt ENDIF \n");
 																						
