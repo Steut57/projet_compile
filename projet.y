@@ -133,32 +133,52 @@ stmt:
 							
 						}
 	| WHILE tag '(' condition ')' tag stmt			{printf("WHILE '(' expr ')' stmt\n");}
-	| IF '(' condition ')' tag stmt %prec IFX		{	printf("IF '(' expr ')' stmt ENDIF \n");
-														
+	| IF '(' condition ')' tag stmt %prec IFX{	
+		printf("IF '(' expr ')' stmt ENDIF \n");
+		struct quad* is_true;
+		struct quad* is_false;
+		
+		struct symbol* label_true= $5;
+		quad_add(&is_true, quad_malloc(&next_quad,':',NULL,NULL,label_true));
+		struct symbol* label_false	= symbol_newtemp(&tds,next_quad);
+		quad_add(&is_false, quad_malloc(&next_quad,':',NULL,NULL,label_false));
+		
+		quad_list_complete($3.truelist,  label_true);
+		quad_list_complete($3.falselist, label_false);
+		
+		$$.code = $3.code;
+		quad_add(&$$.code,is_true);
+		quad_add(&$$.code,is_false);
 													}
-	| IF '(' condition ')' tag stmt ELSE tagoto stmt{printf("IF '(' expr ')' stmt ELSE stmt ENDIF \n");
+	| IF '(' condition ')' tag stmt ELSE tagoto stmt{
 														
-														struct symbol* cst_true  	= symbol_add(&tds,"1");
-														struct symbol* cst_false 	= symbol_add(&tds,"0");
-														struct symbol* result 		= symbol_add(&tds,"result");
-														struct quad* is_true;
-														struct quad* is_false;
-														struct quad* jump;
-														struct symbol* label_true;
-														struct symbol* label_false;
-														
-														label_true	= symbol_newtemp(&tds,next_quad);
-														quad_add(&is_true, quad_malloc(&next_quad,':',cst_true,NULL,result));
-														quad_add(&jump,    quad_malloc(&next_quad,_GOTO,NULL,NULL,NULL));
-														label_false	= symbol_newtemp(&tds,next_quad);
-														quad_add(&is_false, quad_malloc(&next_quad,':',cst_false,NULL,result));
-														quad_list_complete($3.truelist,  label_true);
-														quad_list_complete($3.falselist, label_false);
-														
-														$$.code = $6.code;
-														quad_add(&$$.code,is_true);
-														quad_add(&$$.code,jump);
-														quad_add(&$$.code,is_false);}
+		struct symbol* cst_true  	= symbol_add(&tds,"1");
+		struct symbol* cst_false 	= symbol_add(&tds,"0");
+		//struct symbol* result 		= symbol_add(&tds,"result");
+		struct quad* is_true;
+		struct quad* is_false;
+		//struct quad* jump;
+		struct symbol* label_true;
+		struct symbol* label_false;
+
+		label_true	= symbol_newtemp(&tds,next_quad);
+		printf("SWAG \n");
+		quad_add(&is_true, quad_malloc(&next_quad,':',cst_true,NULL,label_true));
+		printf("SWAG2 \n");
+		//	quad_add(&jump,    quad_malloc(&next_quad,_GOTO,NULL,NULL,NULL));
+		label_false	= symbol_newtemp(&tds,next_quad);
+		printf("SWAG3 \n");
+		quad_add(&is_false, quad_malloc(&next_quad,':',cst_false,NULL,label_false));
+		quad_list_complete($3.truelist,  label_true);
+		quad_list_complete($3.falselist, label_false);
+		printf("SWAG4 \n");
+		$$.code = $3.code;
+		quad_add(&$$.code,is_true);
+
+		//quad_add(&$$.code,jump);
+		//quad_add(&$$.code,is_false);
+	printf("SWAG5 \n");
+	}
 	| '{' stmtlist '}'								{printf("'{' stmtlist '}'\n");
 														$$.code = $2.code;
 														

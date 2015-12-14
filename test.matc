@@ -1,9 +1,6 @@
 int main (){
-int x=3;
-x=3+5;
-float z = 8.41;
-printf("lol\n");
-print(x);
-print(z);
+if(6>2){
+int x = 2;
+}
 return 0;
 }
