@@ -1,9 +1,12 @@
 int main (){
 x;
 x=3;
-x=3+5;
-y;
-x=y+1;
+
+z;
+if(x>2){
+
+	z=2;
+}
 
 return 0;
 }

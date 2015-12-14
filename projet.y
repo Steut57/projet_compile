@@ -27,7 +27,7 @@ void yyerror(const char *s)
 		struct quad* code;
 	}code_expression;
 	struct{
-		struct quad * code ;
+		struct quad* code ;
 		struct quad_list* truelist ;
 		struct quad_list* falselist ;
 	}code_condition;
@@ -59,6 +59,9 @@ void yyerror(const char *s)
 %nonassoc ELSE
 
 %right '='
+%left OR
+%left AND
+%left NOT
 %left GE LE EQ NE '>' '<'
 %left '+' '-'
 %left '*' '/'
@@ -67,17 +70,19 @@ void yyerror(const char *s)
 
 
 program:
-    INT MAIN '(' ')' '{' stmtlist RETURN NUMBER ';' '}' {
-															printf("MATCH\n");
+    INT MAIN '(' ')' '{' stmtlist RETURN NUMBER ';' '}' {	printf("MATCH\n");
 															code = $6.code;}
     |
     ;
     
 stmtlist:
-	stmt 									{printf("stmt\n");$$.code = $1.code;}
+	stmt 									{	printf("stmt\n");
+												$$.code = $1.code;
+											}
 	| stmtlist stmt 						{	printf("stmtlist stmt\n");	
 												$$.code = $1.code; 
-												quad_add(&$$.code,$2.code);}
+												quad_add(&$$.code,$2.code);
+											}
 	;
 	
 stmt:
@@ -91,6 +96,7 @@ stmt:
 	| PRINTF '(' CHAINE ')' ';'   					{
 														$$.code   = NULL;
 														struct symbol* chaine=symbol_newtemp(&tds,next_quad);
+														chaine->type = STRING_TYPE;
 														chaine->value.string=$3;
 														quad_add(&$$.code, quad_malloc(&next_quad,_PRINTF,chaine,NULL,NULL));
 													}
@@ -105,10 +111,7 @@ stmt:
 													}
 	| WHILE tag '(' condition ')' tag stmt			{printf("WHILE '(' expr ')' stmt\n");}
 	| IF '(' condition ')' tag stmt %prec IFX		{	printf("IF '(' expr ')' stmt ENDIF \n");
-														
-													}
-	| IF '(' condition ')' tag stmt ELSE tagoto stmt{printf("IF '(' expr ')' stmt ELSE stmt ENDIF \n");
-														
+																						
 														struct symbol* cst_true  	= symbol_add(&tds,"1");
 														struct symbol* cst_false 	= symbol_add(&tds,"0");
 														struct symbol* result 		= symbol_add(&tds,"result");
@@ -129,25 +132,31 @@ stmt:
 														$$.code = $6.code;
 														quad_add(&$$.code,is_true);
 														quad_add(&$$.code,jump);
-														quad_add(&$$.code,is_false);}
+														quad_add(&$$.code,is_false);
+													}
+	| IF '(' condition ')' tag stmt ELSE tagoto stmt{printf("IF '(' expr ')' stmt ELSE stmt ENDIF \n");
+						}
 	| '{' stmtlist '}'								{printf("'{' stmtlist '}'\n");
 														$$.code = $2.code;
 														
 													}
 	;
-	
 condition:
 	expr '<' expr			{printf("expr -> expr '<' expr\n");
 							}
 	| expr '>' expr			{	printf("expr -> expr '>' expr\n");
-								struct quad* goto_true;
-								struct quad* goto_false;
-								quad_add(&goto_true,  quad_malloc(&next_quad,_SUP,$1.result,$3.result,NULL));
-								quad_add(&goto_false, quad_malloc(&next_quad,'G',NULL,NULL,NULL));
+								struct quad* goto_true;  
+								struct quad* goto_false; 
+								
+								quad_add(&goto_false,quad_malloc(&next_quad,_SUP,$1.result,$3.result,NULL));
+								quad_add(&goto_true,quad_malloc(&next_quad,'G',NULL,NULL,NULL));
+
 								$$.code		= $1.code;
 								quad_add(&$$.code, $3.code);
-								quad_add(&$$.code, goto_true);
-								quad_add(&$$.code, goto_false);
+								quad_add(&$$.code,goto_true);
+								printf("\ngoto_true\t label %d\t op %d\n",goto_true->label,goto_true->op);
+								quad_add(&$$.code,goto_false);
+								printf("goto_false\t label %d\t op %d\n\n",goto_false->label,goto_false->op);
 								$$.truelist		= quad_list_new(goto_true);
 								$$.falselist	= quad_list_new(goto_false);
 							}
@@ -158,6 +167,41 @@ condition:
 	| expr NE expr          {printf("expr -> expr '!=' expr\n");
 							}
 	| expr EQ expr          {printf("expr -> expr '==' expr\n");
+							}
+	| condition OR tag condition	{
+									printf("condition -> condition OR condition \n");
+									quad_list_complete($1.falselist,$3);
+									quad_list_add($$.truelist,$4.truelist);
+									quad_list_add($$.truelist,$1.truelist);
+									
+									$$.falselist	= $4.falselist;
+									$$.code = $1.code;
+									quad_add(&$$.code,$4.code);
+
+							}
+	| condition AND tag condition{
+							printf("condition -> condition AND condition");
+							quad_list_complete($1.falselist,$3);
+							$$.code = $1.code;
+							quad_add(&$1.code,$4.code);
+							$$.falselist = $4.falselist;
+							$$.truelist = $1.truelist;
+							quad_list_add($$.truelist,$4.truelist);
+							}
+	| NOT condition
+							{
+								printf("condition -> NOT condition \n");
+								$$.code = $2.code;
+								$$.truelist = $2.truelist;
+								$$.falselist = $2.falselist;
+							}
+	| '(' condition ')'
+							{
+								printf("condition -> ( condition )\n");
+								$$.code = $2.code;
+								$$.truelist = $2.truelist;
+								$$.falselist = $2.falselist;
+								
 							}
 tag :	{	$$ = symbol_newtemp(&tds,next_quad);
 			}
@@ -178,11 +222,16 @@ expr:
 								$$.code = NULL;
 							}
 	| ID					{	printf("expr -> ID\n");
-								if(symbol_lookup(&tds,$1)==NULL){
-								$$.result = symbol_newtemp(&tds,next_quad);
+								struct symbol* lookup = symbol_lookup(&tds,$1);
+								if(lookup==NULL){
+									$$.result = symbol_newtemp(&tds,next_quad);
+									$$.result->id = $1;
+									$$.code = NULL;
 								}
-								$$.result->id = $1;
-								$$.code = NULL;
+								else{
+									$$.result = lookup;
+								}
+
 							}
 	| '-' expr %prec UNMIN  {	printf("expr -> - expr\n");
 								$$.result	= symbol_newtemp(&tds,next_quad);

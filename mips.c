@@ -8,39 +8,50 @@
 void creat_mips(struct symbol** tds,struct quad* code){
 	FILE* output = fopen("swag.s","w+");
 	//printf("coucou");
-	/*struct symbol* t1 = code->arg1;
-	struct symbol* t2 = code->arg2;
-	printf("t1 value %i\n",t1->value);
-	printf("t1 id %s\n",t1->id);
-	printf("t2 value %i\n",t2->value);
-	printf("t2 id %s\n",t2->id);*/
+	
 	fputs("\t.data\n",output);
 	struct symbol* scan = *tds;
-	while(scan->next != NULL)
+	while(scan!= NULL)
 	{
+		printf("type %i \n",scan->type);
 		fputs(scan->id,output);
-		fputs(": .word ",output);
-		char buffer[16] = {0};
-		//sprintf(buffer, "%d", scan->value);
-		fputs(buffer,output);
-		fputs("\n",output);
+		//si c'est une chaine de caracteres, on fait .asciiz
+		if(scan->type==STRING_TYPE)
+		{
+			fputs(": .asciiz ",output);
+			fputs(scan->value.string,output);
+			fputs("\n",output);
+		}
+		//sinon .word
+		else if (scan->type==REAL_TYPE)
+		{
+			fputs(": .float ",output);
+			char buffer[16] = {0};
+			sprintf(buffer, "%f", scan->value.real);
+			fputs(buffer,output);
+			fputs("\n",output);	
+		}
+		else
+		{
+			fputs(": .word ",output);
+			char buffer[16] = {0};
+			sprintf(buffer, "%d", scan->value.integer);
+			fputs(buffer,output);
+			fputs("\n",output);
+		}
 		scan = scan->next;
 	}
-	fputs(scan->id,output);
-	fputs(": .word ",output);
-	char buffer[16] = {0};
-	//sprintf(buffer, "%d", scan->value);
-	fputs(buffer,output);
 	fputs("\n\n\t.text\n",output);
 	fputs("main :\n",output);
 	struct quad* lol=code;
-	while(lol->next != NULL)
+	while(lol != NULL)
 	{
-		//printf("operateur : %i",lol->op);
-		switch(lol->op)
-		{
+		int operateur=lol->op;
+		printf("operateur2 : %i \n",operateur);
+		switch(operateur)
+		{	
 			//cas addition
-			case 260 : 
+			case _PLUS : 
 				fputs("lw $t0,",output);
 				fputs(lol->arg1->id,output);
 				fputs("\n",output);
@@ -52,8 +63,21 @@ void creat_mips(struct symbol** tds,struct quad* code){
 				fputs(lol->res->id,output);
 				fputs("\n",output);
 				break;
+			//cas soustraction
+			case _MOINS : 
+				fputs("lw $t0,",output);
+				fputs(lol->arg1->id,output);
+				fputs("\n",output);
+				fputs("lw $t1,",output);
+				fputs(lol->arg2->id,output);
+				fputs("\n",output);
+				fputs("sub $t2,$t0,$t1\n",output);
+				fputs("sw $t2,",output);
+				fputs(lol->res->id,output);
+				fputs("\n",output);
+				break;
 			//cas multiplication
-			case 262 :
+			case _MUL :
 				fputs("lw $t0,",output);
 				fputs(lol->arg1->id,output);
 				fputs("\n",output);
@@ -65,55 +89,72 @@ void creat_mips(struct symbol** tds,struct quad* code){
 				fputs(lol->res->id,output);
 				fputs("\n",output);
 				break;
+			//cas division
+			case _DIV :
+				fputs("lw $t0,",output);
+				fputs(lol->arg1->id,output);
+				fputs("\n",output);
+				fputs("lw $t1,",output);
+				fputs(lol->arg2->id,output);
+				fputs("\n",output);
+				fputs("div $t2,$t0,$t1\n",output);
+				fputs("sw $t2,",output);
+				fputs(lol->res->id,output);
+				fputs("\n",output);
+				break;
 			//cas print	
-			case 266 :
-				fputs("li $v0,1\n",output);
-				fputs("move $a0,$t2\n",output);
+			case _PRINT :
+				if(lol->arg1->type==REAL_TYPE)
+				{
+					fputs("li $v0,2\n",output);
+					fputs("l.s $f12,",output);
+				}
+				else
+				{
+					fputs("li $v0,1\n",output);
+					fputs("lw $a0,",output);
+				}
+				fputs(lol->arg1->id,output);
+				fputs("\n",output);
 				fputs("syscall\n",output);
+				break;
+			//cas printf
+			case _PRINTF :
+				fputs("li $v0,4\n",output);
+				fputs("la $a0,",output);
+				fputs(lol->arg1->id,output);
+				fputs("\n",output);
+				fputs("syscall\n",output);
+				break;
+			//cas affectation
+			case _AFFECT :
+				if(lol->arg1->type==REAL_TYPE)
+				{
+					fputs("l.s $f0,",output);
+					fputs(lol->arg1->id,output);
+					fputs("\n",output);
+					fputs("s.s $f0,",output);
+					fputs(lol->res->id,output);
+					fputs("\n",output);
+				}
+				else
+				{
+					fputs("lw $t0,",output);
+					fputs(lol->arg1->id,output);
+					fputs("\n",output);
+					fputs("sw $t0,",output);
+					fputs(lol->res->id,output);
+					fputs("\n",output);	
+						
+				}
+				break;
 			default : 
-				//printf("je suis dans le case default\n");
 				break;
 		}		
 		lol=lol->next;
 	}
-	//printf("operateur2 : %i",lol->op);
-	switch(lol->op)
-	{
-		//cas addition
-		case 260 : 
-			fputs("lw $t0,",output);
-			fputs(lol->arg1->id,output);
-			fputs("\n",output);
-			fputs("lw $t1,",output);
-			fputs(lol->arg2->id,output);
-			fputs("\n",output);
-			fputs("add $t2,$t0,$t1\n",output);
-			fputs("sw $t2,",output);
-			fputs(lol->res->id,output);
-			fputs("\n",output);
-			break;
-		//cas multiplication	
-		case 262 :
-			fputs("lw $t0,",output);
-			fputs(lol->arg1->id,output);
-			fputs("\n",output);
-			fputs("lw $t1,",output);
-			fputs(lol->arg2->id,output);
-			fputs("\n",output);
-			fputs("mul $t2,$t0,$t1\n",output);
-			fputs("sw $t2,",output);
-			fputs(lol->res->id,output);
-			fputs("\n",output);
-			break;
-		//cas print	
-		case 266 :
-			fputs("li $v0,1\n",output);
-			fputs("move $a0,$t2\n",output);
-			fputs("syscall\n",output);
-		default : 
-			//printf("je suis dans le case default\n");
-			break;
-	}	
+	
+	
 
 	fputs("li $v0,10\n",output);
 	fputs("syscall\n",output);

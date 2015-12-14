@@ -19,7 +19,9 @@ chaine		\"(\\.|[^\"\\])*\"
 "matrix"		{return MATRIX;}
 
 [-+()=/*;(){}<>]		{return yytext[0];}
-
+"!"				{return NOT;}
+"&"				{return AND;}
+"|"				{return OR;}
 
 ">="            {return GE;}
 "<="            {return LE;}
@@ -30,6 +32,7 @@ chaine		\"(\\.|[^\"\\])*\"
 "if"            {return IF;}
 "else"          {return ELSE;}
 "print"         {return PRINT;}
+"printf"		{return PRINTF;}
 "then"			{return THEN;}
 "do"			{return DO;}
 "done"			{return DONE;}

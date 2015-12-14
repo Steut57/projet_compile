@@ -63,11 +63,14 @@ extern int yydebug;
     DONE = 273,
     ENDIF = 274,
     IFX = 275,
-    GE = 276,
-    LE = 277,
-    EQ = 278,
-    NE = 279,
-    UNMIN = 280
+    OR = 276,
+    AND = 277,
+    NOT = 278,
+    GE = 279,
+    LE = 280,
+    EQ = 281,
+    NE = 282,
+    UNMIN = 283
   };
 #endif
 /* Tokens.  */
@@ -89,11 +92,14 @@ extern int yydebug;
 #define DONE 273
 #define ENDIF 274
 #define IFX 275
-#define GE 276
-#define LE 277
-#define EQ 278
-#define NE 279
-#define UNMIN 280
+#define OR 276
+#define AND 277
+#define NOT 278
+#define GE 279
+#define LE 280
+#define EQ 281
+#define NE 282
+#define UNMIN 283
 
 /* Value type.  */
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
@@ -110,7 +116,7 @@ union YYSTYPE
 		struct quad* code;
 	}code_expression;
 	struct{
-		struct quad * code ;
+		struct quad* code ;
 		struct quad_list* truelist ;
 		struct quad_list* falselist ;
 	}code_condition;
@@ -124,7 +130,7 @@ union YYSTYPE
 		struct quad_list* nextlist;
 	}code_goto;
 
-#line 128 "y.tab.h" /* yacc.c:1909  */
+#line 134 "y.tab.h" /* yacc.c:1909  */
 };
 # define YYSTYPE_IS_TRIVIAL 1
 # define YYSTYPE_IS_DECLARED 1

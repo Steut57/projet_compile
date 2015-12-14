@@ -23,6 +23,7 @@ struct quad_list{
 };
 void quad_add(struct quad** list, struct quad* new);
 void quad_print(struct quad* list);
+struct quad* tri_list(struct quad* code);
 struct quad_list* quad_list_new(struct quad* node);
 struct quad_list* quad_list_add(struct quad_list* list1, struct quad_list* list2);
 struct quad_list* quad_list_complete(struct quad_list* list, struct symbol* node);
