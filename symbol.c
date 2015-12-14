@@ -7,17 +7,15 @@ struct symbol* symbol_alloc(){
 	struct symbol* new = malloc(sizeof(*new));
 	new->id = NULL;
 	new->isconstant = false;
-	
 	new->next = NULL;
 	new->type = NO_TYPE;
-	
 	return new;
 }
 struct symbol* symbol_newtemp(struct symbol** tds,int next_quad){
-	static int nb_symbol = 0;
+	//static int nb_symbol = 0;
 	char temp_name[SYMBOL_MAX_NAME];
-	snprintf(temp_name,SYMBOL_MAX_NAME,"temp_%d",nb_symbol);
-	nb_symbol++;
+	snprintf(temp_name,SYMBOL_MAX_NAME,"temp_%d",next_quad);
+	//nb_symbol++;
 	return symbol_add(tds,temp_name);
 }
 

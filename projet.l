@@ -18,7 +18,9 @@ chaine		\"(\\.|[^\"\\])*\"
 "float"			{return FLOAT;}
 "matrix"		{return MATRIX;}
 
-[-+()=/*;(){}<>]		{return yytext[0];}
+[-+=/*;(){}<>]		{return yytext[0];}
+"["				{return yytext[0];}
+"]"				{return yytext[0];}
 "!"				{return NOT;}
 "&"				{return AND;}
 "|"				{return OR;}

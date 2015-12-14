@@ -109,6 +109,16 @@ stmt:
 															quad_add(&$$.code,quad_malloc(&next_quad,_AFFECT,$3.result,NULL,lookup));
 														}
 													}
+	| INT ID '[' NUMBER ']' ';'						{
+														printf("tableaulachiche \n");
+														struct symbol* tab =symbol_newtemp(&tds,next_quad);
+														$$.code=NULL;
+														tab->type= ARRAY_TYPE;
+														tab->value.array.dimensions=1;
+														tab->value.array.length=$4;	
+														tab->id=$2;
+														//quad_add(&$$.code,quad_malloc(&next_quad,_ARRAY,NULL,NULL,tab);
+													}
 	| WHILE tag '(' condition ')' tag stmt			{printf("WHILE '(' expr ')' stmt\n");}
 	| IF '(' condition ')' tag stmt %prec IFX		{	printf("IF '(' expr ')' stmt ENDIF \n");
 																						
@@ -266,7 +276,7 @@ expr:
 								$$.result	= $2.result;
 								$$.code	= $2.code;
 							}
-								
+					
 	;
 	
 
@@ -281,5 +291,5 @@ int main(int argc, char* argv[])
 	printf("\nCode\n");
 	quad_print(code);
 	
-	//creat_mips(&tds,code);
+	creat_mips(&tds,code);
 }

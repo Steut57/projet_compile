@@ -2,11 +2,9 @@ int main (){
 x;
 x=3;
 
-z;
-if(x>2){
-
-	z=2;
-}
-
+y;
+y=x;
+print(x);
+int z[8];
 return 0;
 }
