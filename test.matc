@@ -1,7 +1,10 @@
 int main (){
 int x=3;
 x=3+5;
-float z = 8.41;
+float z=3.1;
+z=1.5/0.7;
+int g[4];
+g[3] = 1;
 printf("lol\n");
 print(x);
 print(z);

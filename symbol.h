@@ -2,7 +2,7 @@
 #define SYMBOL_MAX_NAME 64
 typedef enum {
 	_PLUS,_MOINS,_MUL,_DIV,_PARGAU,_PARDRO,_PRINT,_PRINTF,_WHILE,_DO,_DONE,_IF,_UNMIN,
-	_GOTO,_THEN,_ELSE,_ENDIF,_AFFECT,_EQ,_GE,_LE,_NE,_SUP,_INF,_AND,_OR,_NOT,_TRUE,_FALSE
+	_GOTO,_THEN,_ELSE,_ENDIF,_AFFECT,_EQ,_GE,_LE,_NE,_SUP,_INF,_AND,_OR,_NOT,_TRUE,_FALSE,_ARRAY_AFFECT,_ARRAY_ACCESS
 }op;
 typedef enum {
 	BOOLEAN_TYPE, 
@@ -19,6 +19,11 @@ typedef union {
 	char* string;
 	int integer;
 	float real;
+	struct {
+		symbol_type type;
+		int dimensions;
+		int length;
+	} array;
 } value_union;
 
 struct symbol{

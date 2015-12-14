@@ -21,7 +21,8 @@ chaine		\"(\\.|[^\"\\])*\"
 
 [-+()=/*;(){}<>]		{return yytext[0];}
 
-
+"["				{return yytext[0];}
+"]"				{return yytext[0];}
 ">="            {return GE;}
 "<="            {return LE;}
 "=="            {return EQ;}

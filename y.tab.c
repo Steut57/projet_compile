@@ -523,9 +523,9 @@ static const yytype_int8 yyrhs[] =
 static const yytype_uint16 yyrline[] =
 {
        0,    73,    73,    76,    80,    81,    87,    90,    94,   101,
-     110,   123,   135,   145,   155,   156,   159,   182,   189,   191,
-     205,   207,   209,   211,   213,   216,   222,   230,   238,   249,
-     254,   260,   266,   272,   278
+     110,   123,   135,   145,   158,   159,   162,   185,   192,   194,
+     208,   210,   212,   214,   216,   219,   225,   233,   241,   252,
+     257,   263,   269,   275,   281
 };
 #endif
 
@@ -1654,8 +1654,11 @@ yyreduce:
 												if(lookup == NULL) {
 													printf("mmmh le caca c'est très bon \n");
 												}else{
+													struct symbol* yolo =symbol_newtemp(&tds,next_quad);
+													
 													(yyval.code_statement).code = (yyvsp[(6) - (7)].code_expression).code;
-													quad_add(&(yyval.code_statement).code,quad_malloc(&next_quad,_ARRAY_AFFECT,(yyvsp[(3) - (7)].val_num).result,(yyvsp[(6) - (7)].code_expression),(yyvsp[(1) - (7)].val_str).result));
+													yolo->value.integer=(yyvsp[(3) - (7)].val_num);
+													quad_add(&(yyval.code_statement).code,quad_malloc(&next_quad,_ARRAY_AFFECT,(yyvsp[(6) - (7)].code_expression).result,yolo,symbol_lookup(&tds,(yyvsp[(1) - (7)].val_str))));													
 												}
 											}
     break;
@@ -1663,14 +1666,14 @@ yyreduce:
   case 14:
 
 /* Line 1806 of yacc.c  */
-#line 155 "projet.y"
+#line 158 "projet.y"
     {printf("WHILE '(' expr ')' stmt\n");}
     break;
 
   case 15:
 
 /* Line 1806 of yacc.c  */
-#line 156 "projet.y"
+#line 159 "projet.y"
     {	printf("IF '(' expr ')' stmt ENDIF \n");
 														
 													}
@@ -1679,7 +1682,7 @@ yyreduce:
   case 16:
 
 /* Line 1806 of yacc.c  */
-#line 159 "projet.y"
+#line 162 "projet.y"
     {printf("IF '(' expr ')' stmt ELSE stmt ENDIF \n");
 														
 														struct symbol* cst_true  	= symbol_add(&tds,"1");
@@ -1708,7 +1711,7 @@ yyreduce:
   case 17:
 
 /* Line 1806 of yacc.c  */
-#line 182 "projet.y"
+#line 185 "projet.y"
     {printf("'{' stmtlist '}'\n");
 														(yyval.code_statement).code = (yyvsp[(2) - (3)].code_statement).code;
 														
@@ -1718,7 +1721,7 @@ yyreduce:
   case 18:
 
 /* Line 1806 of yacc.c  */
-#line 189 "projet.y"
+#line 192 "projet.y"
     {printf("expr -> expr '<' expr\n");
 							}
     break;
@@ -1726,7 +1729,7 @@ yyreduce:
   case 19:
 
 /* Line 1806 of yacc.c  */
-#line 191 "projet.y"
+#line 194 "projet.y"
     {	
 								printf("expr -> expr '>' expr\n");
 								struct quad* goto_true;
@@ -1746,7 +1749,7 @@ yyreduce:
   case 20:
 
 /* Line 1806 of yacc.c  */
-#line 205 "projet.y"
+#line 208 "projet.y"
     {printf("expr -> expr '>=' expr\n");
 							}
     break;
@@ -1754,7 +1757,7 @@ yyreduce:
   case 21:
 
 /* Line 1806 of yacc.c  */
-#line 207 "projet.y"
+#line 210 "projet.y"
     {printf("expr -> expr '<=' expr\n");
 							}
     break;
@@ -1762,7 +1765,7 @@ yyreduce:
   case 22:
 
 /* Line 1806 of yacc.c  */
-#line 209 "projet.y"
+#line 212 "projet.y"
     {printf("expr -> expr '!=' expr\n");
 							}
     break;
@@ -1770,7 +1773,7 @@ yyreduce:
   case 23:
 
 /* Line 1806 of yacc.c  */
-#line 211 "projet.y"
+#line 214 "projet.y"
     {printf("expr -> expr '==' expr\n");
 							}
     break;
@@ -1778,7 +1781,7 @@ yyreduce:
   case 24:
 
 /* Line 1806 of yacc.c  */
-#line 213 "projet.y"
+#line 216 "projet.y"
     {	(yyval.code_jump) = symbol_newtemp(&tds,next_quad);
 			}
     break;
@@ -1786,7 +1789,7 @@ yyreduce:
   case 25:
 
 /* Line 1806 of yacc.c  */
-#line 216 "projet.y"
+#line 219 "projet.y"
     {	(yyval.code_goto).code = quad_malloc(&next_quad,_GOTO,NULL,NULL,NULL);
 			(yyval.code_goto).quad = symbol_newtemp(&tds,next_quad);
 			(yyval.code_goto).nextlist = quad_list_new((yyval.code_goto).code);
@@ -1796,7 +1799,7 @@ yyreduce:
   case 26:
 
 /* Line 1806 of yacc.c  */
-#line 222 "projet.y"
+#line 225 "projet.y"
     {	printf("expr -> NUMBER\n");
 								
 								(yyval.code_expression).result = symbol_newtemp(&tds,next_quad);
@@ -1810,7 +1813,7 @@ yyreduce:
   case 27:
 
 /* Line 1806 of yacc.c  */
-#line 230 "projet.y"
+#line 233 "projet.y"
     {	printf("expr -> REAL\n");
 								
 								(yyval.code_expression).result = symbol_newtemp(&tds,next_quad);
@@ -1824,7 +1827,7 @@ yyreduce:
   case 28:
 
 /* Line 1806 of yacc.c  */
-#line 238 "projet.y"
+#line 241 "projet.y"
     {	        
 								struct symbol* lookup = symbol_lookup(&tds,(yyvsp[(1) - (1)].val_str));
 								if(lookup==NULL){
@@ -1841,7 +1844,7 @@ yyreduce:
   case 29:
 
 /* Line 1806 of yacc.c  */
-#line 249 "projet.y"
+#line 252 "projet.y"
     {	printf("expr -> - expr\n");
 								(yyval.code_expression).result	= symbol_newtemp(&tds,next_quad);
 								(yyval.code_expression).code	= (yyvsp[(2) - (2)].code_expression).code;
@@ -1852,7 +1855,7 @@ yyreduce:
   case 30:
 
 /* Line 1806 of yacc.c  */
-#line 254 "projet.y"
+#line 257 "projet.y"
     {	printf("expr -> expr + expr\n");
 								(yyval.code_expression).result	= symbol_newtemp(&tds,next_quad);
 								(yyval.code_expression).code	= (yyvsp[(1) - (3)].code_expression).code;
@@ -1864,7 +1867,7 @@ yyreduce:
   case 31:
 
 /* Line 1806 of yacc.c  */
-#line 260 "projet.y"
+#line 263 "projet.y"
     {	printf("expr -> expr '-' expr\n");
 								(yyval.code_expression).result	= symbol_newtemp(&tds,next_quad);
 								(yyval.code_expression).code	= (yyvsp[(1) - (3)].code_expression).code;
@@ -1876,7 +1879,7 @@ yyreduce:
   case 32:
 
 /* Line 1806 of yacc.c  */
-#line 266 "projet.y"
+#line 269 "projet.y"
     {	printf("expr -> expr '*' expr\n");
 								(yyval.code_expression).result	= symbol_newtemp(&tds,next_quad);
 								(yyval.code_expression).code	= (yyvsp[(1) - (3)].code_expression).code;
@@ -1888,7 +1891,7 @@ yyreduce:
   case 33:
 
 /* Line 1806 of yacc.c  */
-#line 272 "projet.y"
+#line 275 "projet.y"
     {	printf("expr -> expr '/' expr\n");
 								(yyval.code_expression).result = symbol_newtemp(&tds,next_quad);
 								(yyval.code_expression).code = (yyvsp[(1) - (3)].code_expression).code;
@@ -1900,7 +1903,7 @@ yyreduce:
   case 34:
 
 /* Line 1806 of yacc.c  */
-#line 278 "projet.y"
+#line 281 "projet.y"
     {	printf("expr -> '(' expr ')'\n");
 								(yyval.code_expression).result	= (yyvsp[(2) - (3)].code_expression).result;
 								(yyval.code_expression).code	= (yyvsp[(2) - (3)].code_expression).code;
@@ -1910,7 +1913,7 @@ yyreduce:
 
 
 /* Line 1806 of yacc.c  */
-#line 1914 "y.tab.c"
+#line 1917 "y.tab.c"
       default: break;
     }
   /* User semantic actions sometimes alter yychar, and that requires
@@ -2141,7 +2144,7 @@ yyreturn:
 
 
 /* Line 2067 of yacc.c  */
-#line 286 "projet.y"
+#line 289 "projet.y"
 
 
 int main(int argc, char* argv[])

@@ -148,8 +148,11 @@ stmt:
 												if(lookup == NULL) {
 													printf("mmmh le caca c'est très bon \n");
 												}else{
+													struct symbol* yolo =symbol_newtemp(&tds,next_quad);
+													
 													$$.code = $6.code;
-													quad_add(&$$.code,quad_malloc(&next_quad,_ARRAY_AFFECT,$3.result,$6,$1.result));
+													yolo->value.integer=$3;
+													quad_add(&$$.code,quad_malloc(&next_quad,_ARRAY_AFFECT,$6.result,yolo,symbol_lookup(&tds,$1)));													
 												}
 											}
 	| WHILE tag '(' condition ')' tag stmt			{printf("WHILE '(' expr ')' stmt\n");}
