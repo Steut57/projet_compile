@@ -1,46 +1,136 @@
 	.data
-temp_0: .word 3
+g: .space 16
+temp_1: .word 4
+temp_2: .word 2
+temp_3: .word 2
+temp_4: .word 1
+temp_5: .word 5
+temp_6: .word 3
+temp_7: .word 1
+temp_8: .word 0
+f: .word 0
+y: .word 0
 x: .word 0
-temp_1: .word 3
-temp_2: .word 5
-temp_3: .word 0
-temp_4: .float 3.100000
-z: .float 0.000000
-temp_5: .float 1.500000
-temp_6: .float 0.700000
-temp_7: .word 0
-g: .space 4
-temp_9: .word 1
-temp_10: .word 3
-temp_11: .asciiz "lol\n"
+z: .word 0
+temp_9: .word 0
+temp_10: .word 1
+temp_11: .word 2
+temp_12: .word 3
+temp_13: .asciiz "valeur de f (1 normalement) "
+temp_14: .asciiz "\nvaleur de x (2 normalement) "
+temp_15: .asciiz "\nvaleur de y (4 normalement) "
+temp_16: .asciiz "\nvaleur de z (5 normalement) "
+temp_17: .asciiz "\n"
 
 
 	.text
 main :
-lw $t0,temp_0
-sw $t0,x
+#----------ARRAY_AFFECT-----------
 lw $t0,temp_1
-lw $t1,temp_2
-add $t2,$t0,$t1
-sw $t2,temp_3
+la $t1,g
+lw $t2,temp_2
+li $t3,4
+mult $t3,$t2
+mflo $t4
+add $t5,$t1,$t4
+sw $t0,($t5)
+#---------FIN ARRAY_AFFECT----------
+#----------ARRAY_AFFECT-----------
 lw $t0,temp_3
-sw $t0,x
-l.s $f0,temp_4
-s.s $f0,z
-l.s $f0,temp_5
-l.s $f1,temp_6
-div.s $f2,$f0,$f1
-s.s $f2,temp_7
+la $t1,g
+lw $t2,temp_4
+li $t3,4
+mult $t3,$t2
+mflo $t4
+add $t5,$t1,$t4
+sw $t0,($t5)
+#---------FIN ARRAY_AFFECT----------
+#----------ARRAY_AFFECT-----------
+lw $t0,temp_5
+la $t1,g
+lw $t2,temp_6
+li $t3,4
+mult $t3,$t2
+mflo $t4
+add $t5,$t1,$t4
+sw $t0,($t5)
+#---------FIN ARRAY_AFFECT----------
+#----------ARRAY_AFFECT-----------
 lw $t0,temp_7
+la $t1,g
+lw $t2,temp_8
+li $t3,4
+mult $t3,$t2
+mflo $t4
+add $t5,$t1,$t4
+sw $t0,($t5)
+#---------FIN ARRAY_AFFECT----------
+#----------ARRAY_ACCESS-----------
+lw $t2,temp_9
+la $t1,g
+li $t3,4
+mult $t3,$t2
+mflo $t4
+add $t5,$t1,$t4
+lw $t0,($t5)
+sw $t0,f
+#---------FIN ARRAY_ACCESS----------
+#----------ARRAY_ACCESS-----------
+lw $t2,temp_10
+la $t1,g
+li $t3,4
+mult $t3,$t2
+mflo $t4
+add $t5,$t1,$t4
+lw $t0,($t5)
+sw $t0,x
+#---------FIN ARRAY_ACCESS----------
+#----------ARRAY_ACCESS-----------
+lw $t2,temp_11
+la $t1,g
+li $t3,4
+mult $t3,$t2
+mflo $t4
+add $t5,$t1,$t4
+lw $t0,($t5)
+sw $t0,y
+#---------FIN ARRAY_ACCESS----------
+#----------ARRAY_ACCESS-----------
+lw $t2,temp_12
+la $t1,g
+li $t3,4
+mult $t3,$t2
+mflo $t4
+add $t5,$t1,$t4
+lw $t0,($t5)
 sw $t0,z
+#---------FIN ARRAY_ACCESS----------
 li $v0,4
-la $a0,temp_11
+la $a0,temp_13
+syscall
+li $v0,1
+lw $a0,f
+syscall
+li $v0,4
+la $a0,temp_14
 syscall
 li $v0,1
 lw $a0,x
 syscall
-li $v0,2
-l.s $f12,z
+li $v0,4
+la $a0,temp_15
+syscall
+li $v0,1
+lw $a0,y
+syscall
+li $v0,4
+la $a0,temp_16
+syscall
+li $v0,1
+lw $a0,z
+syscall
+li $v0,4
+la $a0,temp_17
 syscall
 li $v0,10
 syscall

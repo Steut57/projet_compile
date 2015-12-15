@@ -107,6 +107,31 @@ stmt:
 															quad_add(&$$.code,quad_malloc(&next_quad,_AFFECT,$3.result,NULL,lookup));
 														}
 													}
+													
+	| ID '=' ID '[' NUMBER ']' ';'					{	printf("id = acces array\n");
+		
+		struct symbol* lookup = symbol_lookup(&tds,$1);
+		struct symbol* lookup2 = symbol_lookup(&tds,$3);
+		if(lookup == NULL) {
+			printf("L'identifiant %s n'existe pas \n",$1);
+		}
+		else if(lookup2 == NULL) {
+			printf("Cet identifiant n'existe pas \n");
+		}
+		else{
+			if($1==$3)
+			{
+				printf("Mauvaise affectation\n");
+			}
+			else
+			{
+				$$.code = NULL;
+				struct symbol* yolo = symbol_newtemp(&tds,next_quad);
+				yolo->value.integer=$5;
+				quad_add(&$$.code,quad_malloc(&next_quad,_ARRAY_ACCESS,yolo,lookup2,lookup));
+			}
+		}
+	}
 	| INT ID '=' expr ';'	{	printf("affectation int \n");
 								
 							struct symbol* lookup = symbol_lookup(&tds,$2);
@@ -120,6 +145,19 @@ stmt:
 							}
 							
 						}
+	| INT ID ';'	{	printf("affectation int \n");
+			
+		struct symbol* lookup = symbol_lookup(&tds,$2);
+		if(lookup == NULL) {
+			struct symbol* newID = symbol_add(&tds,$2);
+			newID->type=INTEGER_TYPE;
+			$$.code=NULL;		
+		}else{								
+			printf("Cet identifiant existe deja\n");
+		}
+		
+	}
+						
 	| FLOAT ID '=' expr	';'{	printf("affectation float \n");
 							struct symbol* lookup = symbol_lookup(&tds,$2);
 							if(lookup == NULL) {
@@ -133,7 +171,7 @@ stmt:
 							
 						}
 	| INT ID '[' NUMBER ']' ';'			{
-											printf("tabtabtab \n");
+											printf("tabint \n");
 											struct symbol* tab =symbol_newtemp(&tds,next_quad);
 											$$.code=NULL;
 											tab->type= ARRAY_TYPE;
@@ -142,6 +180,7 @@ stmt:
 											tab->id=$2;
 											//quad_add(&$$.code,quad_malloc(&next_quad,_ARRAY,NULL,NULL,tab);
 										}
+										
 	| ID '[' NUMBER ']' '=' expr ';'			{
 												printf("assignation\n");
 												struct symbol* lookup = symbol_lookup(&tds,$1);

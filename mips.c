@@ -36,7 +36,7 @@ void creat_mips(struct symbol** tds,struct quad* code){
 		{
 			fputs(": .space ",output);
 			char buffer[16] = {0};
-			sprintf(buffer, "%i", scan->value.array.length);
+			sprintf(buffer, "%i", (scan->value.array.length)*4);
 			fputs(buffer,output);
 			fputs("\n",output);	
 		}
@@ -221,10 +221,50 @@ void creat_mips(struct symbol** tds,struct quad* code){
 					fputs("\n",output);
 				}
 				break;
+			//cas array affectation
 			case _ARRAY_AFFECT :
 				{
-					//fputs("",output);
+					fputs("#----------ARRAY_AFFECT-----------\n",output);
+					fputs("lw $t0,",output);
+					fputs(lol->arg1->id,output);
+					fputs("\n",output);
+					fputs("la $t1,",output);
+					fputs(lol->res->id,output);
+					fputs("\n",output);
+					fputs("lw $t2,",output);
+					fputs(lol->arg2->id,output);
+					fputs("\n",output);
+					fputs("li $t3,4",output);
+					fputs("\n",output);		
+					fputs("mult $t3,$t2\n",output);
+					fputs("mflo $t4\n",output);
+					fputs("add $t5,$t1,$t4\n",output);
+					fputs("sw $t0,($t5)\n",output);	
+					fputs("#---------FIN ARRAY_AFFECT----------\n",output);
 				}
+				break;
+			//cas array access
+			case _ARRAY_ACCESS :
+				{
+					fputs("#----------ARRAY_ACCESS-----------\n",output);
+					fputs("lw $t2,",output);
+					fputs(lol->arg1->id,output);
+					fputs("\n",output);
+					fputs("la $t1,",output);
+					fputs(lol->arg2->id,output);
+					fputs("\n",output);
+					fputs("li $t3,4",output);
+					fputs("\n",output);		
+					fputs("mult $t3,$t2\n",output);
+					fputs("mflo $t4\n",output);
+					fputs("add $t5,$t1,$t4\n",output);
+					fputs("lw $t0,($t5)\n",output);	
+					fputs("sw $t0,",output);
+					fputs(lol->res->id,output);
+					fputs("\n",output);
+					fputs("#---------FIN ARRAY_ACCESS----------\n",output);
+				}
+				break;
 			default : 
 				break;
 		}		
