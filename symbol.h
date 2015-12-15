@@ -24,6 +24,12 @@ typedef union {
 		int dimensions;
 		int length;
 	} array;
+	
+	struct {
+		symbol_type type;
+		int nbCols;
+		int nbRows;
+	} matrix;
 } value_union;
 
 struct symbol{

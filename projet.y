@@ -180,6 +180,16 @@ stmt:
 											tab->id=$2;
 											//quad_add(&$$.code,quad_malloc(&next_quad,_ARRAY,NULL,NULL,tab);
 										}
+	| INT ID '[' NUMBER ']' '[' NUMBER ']' ';'	{
+											printf("tabint \n");
+											struct symbol* tab =symbol_newtemp(&tds,next_quad);
+											$$.code=NULL;
+											tab->type= ARRAY_TYPE;
+											tab->value.array.dimensions=2;
+											tab->value.array.length=$4;	
+											tab->id=$2;
+											//quad_add(&$$.code,quad_malloc(&next_quad,_ARRAY,NULL,NULL,tab);
+										}
 										
 	| ID '[' NUMBER ']' '=' expr ';'			{
 												printf("assignation\n");
