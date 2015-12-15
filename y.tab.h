@@ -45,22 +45,23 @@
      RETURN = 263,
      PRINT = 264,
      PRINTF = 265,
-     INT = 266,
-     FLOAT = 267,
-     MATRIX = 268,
-     IF = 269,
-     ELSE = 270,
-     WHILE = 271,
-     THEN = 272,
-     DO = 273,
-     DONE = 274,
-     ENDIF = 275,
-     IFX = 276,
-     NE = 277,
-     EQ = 278,
-     LE = 279,
-     GE = 280,
-     UNMIN = 281
+     PRINTTAB = 266,
+     INT = 267,
+     FLOAT = 268,
+     MATRIX = 269,
+     IF = 270,
+     ELSE = 271,
+     WHILE = 272,
+     THEN = 273,
+     DO = 274,
+     DONE = 275,
+     ENDIF = 276,
+     IFX = 277,
+     NE = 278,
+     EQ = 279,
+     LE = 280,
+     GE = 281,
+     UNMIN = 282
    };
 #endif
 /* Tokens.  */
@@ -72,22 +73,23 @@
 #define RETURN 263
 #define PRINT 264
 #define PRINTF 265
-#define INT 266
-#define FLOAT 267
-#define MATRIX 268
-#define IF 269
-#define ELSE 270
-#define WHILE 271
-#define THEN 272
-#define DO 273
-#define DONE 274
-#define ENDIF 275
-#define IFX 276
-#define NE 277
-#define EQ 278
-#define LE 279
-#define GE 280
-#define UNMIN 281
+#define PRINTTAB 266
+#define INT 267
+#define FLOAT 268
+#define MATRIX 269
+#define IF 270
+#define ELSE 271
+#define WHILE 272
+#define THEN 273
+#define DO 274
+#define DONE 275
+#define ENDIF 276
+#define IFX 277
+#define NE 278
+#define EQ 279
+#define LE 280
+#define GE 281
+#define UNMIN 282
 
 
 
@@ -125,7 +127,7 @@ typedef union YYSTYPE
 
 
 /* Line 2068 of yacc.c  */
-#line 129 "y.tab.h"
+#line 131 "y.tab.h"
 } YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */

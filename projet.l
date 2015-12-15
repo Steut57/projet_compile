@@ -33,6 +33,7 @@ chaine		\"(\\.|[^\"\\])*\"
 "else"          {return ELSE;}
 "print"         {return PRINT;}
 "printf"        {return PRINTF;}
+"printtab"      {return PRINTTAB;}
 "then"			{return THEN;}
 "do"			{return DO;}
 "done"			{return DONE;}

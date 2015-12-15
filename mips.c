@@ -40,6 +40,15 @@ void creat_mips(struct symbol** tds,struct quad* code){
 			fputs(buffer,output);
 			fputs("\n",output);	
 		}
+		//sinon si c'est un matrix .space
+		else if (scan->type==MATRIX_TYPE)
+		{
+			fputs(": .space ",output);
+			char buffer[16] = {0};
+			sprintf(buffer, "%i", (scan->value.matrix.nbCols)*(scan->value.matrix.nbRows)*4);
+			fputs(buffer,output);
+			fputs("\n",output);	
+		}
 		//sinon entier : .word
 		else 
 		{
@@ -263,6 +272,58 @@ void creat_mips(struct symbol** tds,struct quad* code){
 					fputs(lol->res->id,output);
 					fputs("\n",output);
 					fputs("#---------FIN ARRAY_ACCESS----------\n",output);
+				}
+				break;
+			//cas matrix affectation
+			case _MATRIX_AFFECT :
+				{
+					fputs("#----------MATRIX_AFFECT-----------\n",output);
+					fputs("lw $t0,",output);
+					fputs(lol->arg1->id,output);
+					fputs("\n",output);
+					fputs("la $t1,",output);
+					fputs(lol->res->id,output);
+					fputs("\n",output);
+					fputs("lw $t2,",output);
+					fputs(lol->arg2->id,output);
+					fputs("\n",output);
+					fputs("li $t3,4",output);
+					fputs("\n",output);		
+					fputs("mult $t3,$t2\n",output);
+					fputs("mflo $t4\n",output);
+					fputs("add $t5,$t1,$t4\n",output);
+					fputs("sw $t0,($t5)\n",output);	
+					fputs("#---------FIN MATRIX_AFFECT----------\n",output);
+				}
+				break;
+			//cas matrix acces
+			case _MATRIX_ACCESS :
+				{
+					fputs("#----------MATRIX_ACCESS-----------\n",output);
+					fputs("lw $t2,",output);
+					fputs(lol->arg1->id,output);
+					fputs("\n",output);
+					fputs("la $t1,",output);
+					fputs(lol->arg2->id,output);
+					fputs("\n",output);
+					fputs("li $t3,4",output);
+					fputs("\n",output);		
+					fputs("mult $t3,$t2\n",output);
+					fputs("mflo $t4\n",output);
+					fputs("add $t5,$t1,$t4\n",output);
+					fputs("lw $t0,($t5)\n",output);	
+					fputs("sw $t0,",output);
+					fputs(lol->res->id,output);
+					fputs("\n",output);
+					fputs("#---------FIN MATRIX_ACCESS----------\n",output);
+				}
+				break;
+			//cas printtab
+			case _PRINTTAB :
+				{
+					fputs("#----------PRINTTAB-----------\n",output);
+					printf("taille %i \n",lol->arg1->value.array.length);
+
 				}
 				break;
 			default : 

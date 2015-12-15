@@ -54,7 +54,7 @@ void yyerror(const char *s)
 %token <val_real> REAL
 
 
-%token MAIN RETURN PRINT PRINTF
+%token MAIN RETURN PRINT PRINTF PRINTTAB
 %token INT FLOAT MATRIX
 %token IF ELSE WHILE THEN DO DONE ENDIF
 
@@ -98,6 +98,18 @@ stmt:
 														chaine->value.string=$3;														
 														quad_add(&$$.code, quad_malloc(&next_quad,_PRINTF,chaine,NULL,NULL));
 													}
+	| PRINTTAB '(' ID ')' ';'   					{
+														
+														struct symbol* tab=symbol_newtemp(&tds,next_quad);
+														struct symbol* lookup = symbol_lookup(&tds,$3);
+														if(lookup == NULL) {
+															printf("Cet identifiant n'existe pas \n");
+														}else{
+														$$.code   = NULL;
+														tab->type=ARRAY_TYPE;														
+														quad_add(&$$.code, quad_malloc(&next_quad,_PRINTTAB,lookup,NULL,NULL));
+														}
+													}
 	| ID '=' expr ';'								{	printf("id = expr\n");
 														struct symbol* lookup = symbol_lookup(&tds,$1);
 														if(lookup == NULL) {
@@ -132,6 +144,97 @@ stmt:
 			}
 		}
 	}
+	| INT ID '=' ID '[' NUMBER ']' ';'					{	printf("id = acces array\n");
+		
+		struct symbol* lookup = symbol_lookup(&tds,$2);
+		struct symbol* lookup2 = symbol_lookup(&tds,$4);
+		if(lookup != NULL) {
+			printf("L'identifiant %s est deja declaré \n",$2);
+		}
+		else
+		{
+				struct symbol* newID = symbol_add(&tds,$2);
+				newID -> type= INTEGER_TYPE;
+				struct symbol* lookup = symbol_lookup(&tds,newID->id);
+				if(lookup2 == NULL) {
+					printf("L'identifiant %s n'existe pas \n",$4);
+				}
+				else{
+					if($2==$4)
+					{
+						printf("Mauvaise affectation\n");
+					}
+					else
+					{
+						$$.code = NULL;
+						struct symbol* yolo = symbol_newtemp(&tds,next_quad);
+						yolo->value.integer=$6;
+						yolo->type=INTEGER_TYPE;
+						quad_add(&$$.code,quad_malloc(&next_quad,_ARRAY_ACCESS,yolo,lookup2,lookup));
+					}
+				}
+		}
+		
+	}
+	
+	| ID '=' ID '[' NUMBER ']' '[' NUMBER ']' ';'					{	printf("id = acces matrix\n");
+		
+		struct symbol* lookup = symbol_lookup(&tds,$1);
+		struct symbol* lookup2 = symbol_lookup(&tds,$3);
+		if(lookup == NULL) {
+			printf("L'identifiant %s n'existe pas \n",$1);
+		}
+		else if(lookup2 == NULL) {
+			printf("L'identifiant %s n'existe pas \n",$3);
+		}
+		else{
+			if($1==$3)
+			{
+				printf("Mauvaise affectation\n");
+			}
+			else
+			{
+				$$.code = NULL;
+				struct symbol* yolo = symbol_newtemp(&tds,next_quad);
+				printf("-----------------nbRows-%i--------------",lookup->value.matrix.nbRows);
+				yolo->value.integer=$5*lookup2->value.matrix.nbRows+$8;
+				quad_add(&$$.code,quad_malloc(&next_quad,_MATRIX_ACCESS,yolo,lookup2,lookup));
+			}
+		}
+	}
+	
+	| INT ID '=' ID '[' NUMBER ']' '[' NUMBER ']' ';'					{	printf("id = acces matrix\n");
+		
+		struct symbol* lookup = symbol_lookup(&tds,$2);
+		struct symbol* lookup2 = symbol_lookup(&tds,$4);
+		if(lookup != NULL) {
+			printf("L'identifiant %s est deja declaré \n",$2);
+		}
+		else
+		{
+				struct symbol* newID = symbol_add(&tds,$2);
+				newID -> type= INTEGER_TYPE;
+				struct symbol* lookup = symbol_lookup(&tds,newID->id);
+				if(lookup2 == NULL) {
+					printf("L'identifiant %s n'existe pas \n",$4);
+				}
+				else{
+					if($2==$4)
+					{
+						printf("Mauvaise affectation\n");
+					}
+					else
+					{
+						$$.code = NULL;
+						struct symbol* yolo = symbol_newtemp(&tds,next_quad);
+						yolo->value.integer=$6*lookup2->value.matrix.nbRows+$9;
+						yolo->type=INTEGER_TYPE;
+						quad_add(&$$.code,quad_malloc(&next_quad,_MATRIX_ACCESS,yolo,lookup2,lookup));
+					}
+				}
+		}
+		
+	}
 	| INT ID '=' expr ';'	{	printf("affectation int \n");
 								
 							struct symbol* lookup = symbol_lookup(&tds,$2);
@@ -145,6 +248,7 @@ stmt:
 							}
 							
 						}
+						
 	| INT ID ';'	{	printf("affectation int \n");
 			
 		struct symbol* lookup = symbol_lookup(&tds,$2);
@@ -180,15 +284,28 @@ stmt:
 											tab->id=$2;
 											//quad_add(&$$.code,quad_malloc(&next_quad,_ARRAY,NULL,NULL,tab);
 										}
-	| INT ID '[' NUMBER ']' '[' NUMBER ']' ';'	{
+	| MATRIX ID '[' NUMBER ']' '[' NUMBER ']' ';'	{
 											printf("tabint \n");
 											struct symbol* tab =symbol_newtemp(&tds,next_quad);
 											$$.code=NULL;
-											tab->type= ARRAY_TYPE;
-											tab->value.array.dimensions=2;
-											tab->value.array.length=$4;	
+											tab->type= MATRIX_TYPE;
+											tab->value.matrix.nbCols=$7;
+											tab->value.matrix.nbRows=$4;	
 											tab->id=$2;
 											//quad_add(&$$.code,quad_malloc(&next_quad,_ARRAY,NULL,NULL,tab);
+										}
+	| ID '[' NUMBER ']' '[' NUMBER ']' '=' expr ';'		{
+											printf("assignation matrix\n");
+											struct symbol* lookup = symbol_lookup(&tds,$1);
+											if(lookup == NULL) {
+												printf("mmmh le caca c'est très bon \n");
+											}else{
+												struct symbol* yolo =symbol_newtemp(&tds,next_quad);
+												
+												$$.code = $9.code;
+												yolo->value.integer=$3*lookup->value.matrix.nbRows+$6;
+												quad_add(&$$.code,quad_malloc(&next_quad,_MATRIX_AFFECT,$9.result,yolo,symbol_lookup(&tds,$1)));													
+											}
 										}
 										
 	| ID '[' NUMBER ']' '=' expr ';'			{
