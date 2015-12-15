@@ -1,6 +1,11 @@
 int main (){
 if(6>2){
 int x = 2;
+x=x+3;
+int y=5;
+if(5>2){
+int z = 2;
+}
 }
 return 0;
 }

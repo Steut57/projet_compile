@@ -11,14 +11,18 @@ struct symbol* symbol_alloc(){
 	new->type = NO_TYPE;
 	return new;
 }
-struct symbol* symbol_newtemp(struct symbol** tds,int next_quad){
+struct symbol* symbol_newcst(struct symbol** tds,int next_quad){
+	char temp_name[SYMBOL_MAX_NAME];
+	snprintf(temp_name,SYMBOL_MAX_NAME,"temp_%d",next_quad);
+	return symbol_add(tds,temp_name);
+}
+struct symbol* symbol_newtemp(struct symbol** tds){
 	static int nb_symbol = 0;
 	char temp_name[SYMBOL_MAX_NAME];
-	snprintf(temp_name,SYMBOL_MAX_NAME,"temp_%d",nb_symbol);
+	snprintf(temp_name,SYMBOL_MAX_NAME,"cst_%d",nb_symbol);
 	nb_symbol++;
 	return symbol_add(tds,temp_name);
 }
-
 struct symbol* symbol_add(struct symbol** tds, char* id){
 	if(*tds == NULL){
 		*tds = symbol_alloc();

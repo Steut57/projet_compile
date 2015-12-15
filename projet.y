@@ -93,7 +93,7 @@ stmt:
 													}
 	| PRINTF '(' CHAINE ')' ';'   					{
 														$$.code   = NULL;
-														struct symbol* chaine=symbol_newtemp(&tds,next_quad);
+														struct symbol* chaine=symbol_newtemp(&tds);
 														chaine->type=STRING_TYPE;
 														chaine->value.string=$3;														
 														quad_add(&$$.code, quad_malloc(&next_quad,_PRINTF,chaine,NULL,NULL));
@@ -135,18 +135,19 @@ stmt:
 	| WHILE tag '(' condition ')' tag stmt			{printf("WHILE '(' expr ')' stmt\n");}
 	| IF '(' condition ')' tag stmt %prec IFX{	
 		printf("IF '(' expr ')' stmt ENDIF \n");
-		struct quad* is_true;
-		struct quad* is_false;
+		struct quad* is_true=NULL;
+		struct quad* is_false=NULL;
 		
 		struct symbol* label_true= $5;
 		quad_add(&is_true, quad_malloc(&next_quad,':',NULL,NULL,label_true));
-		struct symbol* label_false	= symbol_newtemp(&tds,next_quad);
+		struct symbol* label_false	= symbol_newcst(&tds,next_quad);
 		quad_add(&is_false, quad_malloc(&next_quad,':',NULL,NULL,label_false));
 		
 		quad_list_complete($3.truelist,  label_true);
 		quad_list_complete($3.falselist, label_false);
 		
 		$$.code = $3.code;
+		quad_add(&$$.code,$6.code);
 		quad_add(&$$.code,is_true);
 		quad_add(&$$.code,is_false);
 													}
@@ -161,12 +162,12 @@ stmt:
 		struct symbol* label_true;
 		struct symbol* label_false;
 
-		label_true	= symbol_newtemp(&tds,next_quad);
+		label_true	= symbol_newcst(&tds,next_quad);
 		printf("SWAG \n");
 		quad_add(&is_true, quad_malloc(&next_quad,':',cst_true,NULL,label_true));
 		printf("SWAG2 \n");
 		//	quad_add(&jump,    quad_malloc(&next_quad,_GOTO,NULL,NULL,NULL));
-		label_false	= symbol_newtemp(&tds,next_quad);
+		label_false	= symbol_newcst(&tds,next_quad);
 		printf("SWAG3 \n");
 		quad_add(&is_false, quad_malloc(&next_quad,':',cst_false,NULL,label_false));
 		quad_list_complete($3.truelist,  label_true);
@@ -186,42 +187,98 @@ stmt:
 	;
 	
 condition:
-	expr '<' expr			{printf("expr -> expr '<' expr\n");
-							}
-	| expr '>' expr			{	
-								printf("expr -> expr '>' expr\n");
-								struct quad* goto_true;
-								struct quad* goto_false;
-								quad_add(&goto_true,  quad_malloc(&next_quad,_SUP,$1.result,$3.result,NULL));
-								quad_add(&goto_false, quad_malloc(&next_quad,'G',NULL,NULL,NULL));
-								$$.truelist		= quad_list_new(goto_true);
-								$$.falselist	= quad_list_new(goto_false);
-								$$.code		= $1.code;
-								quad_add(&$$.code, $3.code);
-								quad_add(&$$.code, goto_true);
-								quad_add(&$$.code, goto_false);
+	expr '<' expr {
+		printf("expr -> expr '<' expr\n");
+		struct quad* goto_true=NULL;
+		struct quad* goto_false=NULL;
+		quad_add(&goto_true,  quad_malloc(&next_quad,_INF,$1.result,$3.result,NULL));
+		quad_add(&goto_false, quad_malloc(&next_quad,'G',NULL,NULL,NULL));
+		$$.truelist		= quad_list_new(goto_true);
+		$$.falselist	= quad_list_new(goto_false);
+		$$.code		= $1.code;
+		quad_add(&$$.code, $3.code);
+		quad_add(&$$.code, goto_true);
+		quad_add(&$$.code, goto_false);
 
-							}
-	| expr GE expr        	{printf("expr -> expr '>=' expr\n");
-							}
-	| expr LE expr          {printf("expr -> expr '<=' expr\n");
-							}
-	| expr NE expr          {printf("expr -> expr '!=' expr\n");
-							}
-	| expr EQ expr          {printf("expr -> expr '==' expr\n");
-							}
-tag :	{	$$ = symbol_newtemp(&tds,next_quad);
+	}
+	| expr '>' expr	{	
+		printf("expr -> expr '>' expr\n");
+		struct quad* goto_true=NULL;
+		struct quad* goto_false=NULL;
+		quad_add(&goto_true,  quad_malloc(&next_quad,_SUP,$1.result,$3.result,NULL));
+		quad_add(&goto_false, quad_malloc(&next_quad,'G',NULL,NULL,NULL));
+		$$.truelist		= quad_list_new(goto_true);
+		$$.falselist	= quad_list_new(goto_false);
+		$$.code		= $1.code;
+		quad_add(&$$.code, $3.code);
+		quad_add(&$$.code, goto_true);
+		quad_add(&$$.code, goto_false);
+
+	}
+	| expr GE expr {
+		printf("expr -> expr '>=' expr\n");
+		struct quad* goto_true=NULL;
+		struct quad* goto_false=NULL;
+		quad_add(&goto_true,  quad_malloc(&next_quad,_GE,$1.result,$3.result,NULL));
+		quad_add(&goto_false, quad_malloc(&next_quad,'G',NULL,NULL,NULL));
+		$$.truelist		= quad_list_new(goto_true);
+		$$.falselist	= quad_list_new(goto_false);
+		$$.code		= $1.code;
+		quad_add(&$$.code, $3.code);
+		quad_add(&$$.code, goto_true);
+		quad_add(&$$.code, goto_false);
+	}
+	| expr LE expr {
+		printf("expr -> expr '<=' expr\n");
+		struct quad* goto_true=NULL;
+		struct quad* goto_false=NULL;
+		quad_add(&goto_true,  quad_malloc(&next_quad,_LE,$1.result,$3.result,NULL));
+		quad_add(&goto_false, quad_malloc(&next_quad,'G',NULL,NULL,NULL));
+		$$.truelist		= quad_list_new(goto_true);
+		$$.falselist	= quad_list_new(goto_false);
+		$$.code		= $1.code;
+		quad_add(&$$.code, $3.code);
+		quad_add(&$$.code, goto_true);
+		quad_add(&$$.code, goto_false);
+	}
+	| expr NE expr {
+		printf("expr -> expr '!=' expr\n");
+		struct quad* goto_true=NULL;
+		struct quad* goto_false=NULL;
+		quad_add(&goto_true,  quad_malloc(&next_quad,_NE,$1.result,$3.result,NULL));
+		quad_add(&goto_false, quad_malloc(&next_quad,'G',NULL,NULL,NULL));
+		$$.truelist		= quad_list_new(goto_true);
+		$$.falselist	= quad_list_new(goto_false);
+		$$.code		= $1.code;
+		quad_add(&$$.code, $3.code);
+		quad_add(&$$.code, goto_true);
+		quad_add(&$$.code, goto_false);
+	}
+	| expr EQ expr          {
+		printf("expr -> expr '==' expr\n");
+		struct quad* goto_true=NULL;
+		struct quad* goto_false=NULL;
+		quad_add(&goto_true,  quad_malloc(&next_quad,_EQ,$1.result,$3.result,NULL));
+		quad_add(&goto_false, quad_malloc(&next_quad,'G',NULL,NULL,NULL));
+		$$.truelist		= quad_list_new(goto_true);
+		$$.falselist	= quad_list_new(goto_false);
+		$$.code		= $1.code;
+		quad_add(&$$.code, $3.code);
+		quad_add(&$$.code, goto_true);
+		quad_add(&$$.code, goto_false);
+	}
+tag :	{	$$ = symbol_newcst(&tds,next_quad);
 			}
 
 tagoto :{	$$.code = quad_malloc(&next_quad,_GOTO,NULL,NULL,NULL);
-			$$.quad = symbol_newtemp(&tds,next_quad);
+			$$.quad = symbol_newcst(&tds,next_quad);
 			$$.nextlist = quad_list_new($$.code);
 			}
 
 expr:
 	NUMBER					{	printf("expr -> NUMBER\n");
 								
-								$$.result = symbol_newtemp(&tds,next_quad);
+								$$.result = symbol_newtemp(&tds);
 								$$.result->type = INTEGER_TYPE;
 								$$.result->isconstant = true;
 								$$.result->value.integer = $1;
@@ -229,7 +286,7 @@ expr:
 							}
 	|REAL					{	printf("expr -> REAL\n");
 								
-								$$.result = symbol_newtemp(&tds,next_quad);
+								$$.result = symbol_newtemp(&tds);
 								$$.result->type = REAL_TYPE;
 								$$.result->isconstant = true;							
 								$$.result->value.real = $1;							
@@ -238,7 +295,7 @@ expr:
 	| ID					{	        
 								struct symbol* lookup = symbol_lookup(&tds,$1);
 								if(lookup==NULL){
-								 $$.result = symbol_newtemp(&tds,next_quad);
+								 $$.result = symbol_add(&tds,$1);
 								 $$.result->id = $1;
 								 $$.code = NULL;
 								}
@@ -247,30 +304,30 @@ expr:
 								}
 							}
 	| '-' expr %prec UNMIN  {	printf("expr -> - expr\n");
-								$$.result	= symbol_newtemp(&tds,next_quad);
+								$$.result	= symbol_newtemp(&tds);
 								$$.code	= $2.code;
 								quad_add(&$$.code, quad_malloc(&next_quad,_UNMIN,$2.result,NULL,$$.result));
 							}
 	| expr '+' expr 		{	printf("expr -> expr + expr\n");
-								$$.result	= symbol_newtemp(&tds,next_quad);
+								$$.result	= symbol_newtemp(&tds);
 								$$.code	= $1.code;
 								quad_add(&$$.code,$3.code);
 								quad_add(&$$.code, quad_malloc(&next_quad,_PLUS,$1.result,$3.result,$$.result));
 							}
 	| expr '-' expr 		{	printf("expr -> expr '-' expr\n");
-								$$.result	= symbol_newtemp(&tds,next_quad);
+								$$.result	= symbol_newtemp(&tds);
 								$$.code	= $1.code;
 								quad_add(&$$.code,$3.code);
 								quad_add(&$$.code, quad_malloc(&next_quad,_MOINS,$1.result,$3.result,$$.result));
 							}
 	| expr '*' expr 		{	printf("expr -> expr '*' expr\n");
-								$$.result	= symbol_newtemp(&tds,next_quad);
+								$$.result	= symbol_newtemp(&tds);
 								$$.code	= $1.code;
 								quad_add(&$$.code,$3.code);
 								quad_add(&$$.code, quad_malloc(&next_quad,_MUL,$1.result,$3.result,$$.result));
 							}
 	| expr '/' expr 		{	printf("expr -> expr '/' expr\n");
-								$$.result = symbol_newtemp(&tds,next_quad);
+								$$.result = symbol_newtemp(&tds);
 								$$.code = $1.code;
 								quad_add(&$$.code,$3.code);
 								quad_add(&$$.code, quad_malloc(&next_quad,_DIV,$1.result,$3.result,$$.result));

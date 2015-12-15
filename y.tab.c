@@ -516,9 +516,9 @@ static const yytype_uint8 yytranslate[] =
 static const yytype_uint16 yyrline[] =
 {
        0,    73,    73,    76,    80,    81,    87,    90,    94,   101,
-     110,   123,   135,   136,   153,   182,   189,   191,   205,   207,
-     209,   211,   213,   216,   222,   230,   238,   249,   254,   260,
-     266,   272,   278
+     110,   123,   135,   136,   154,   183,   190,   204,   218,   231,
+     244,   257,   270,   273,   279,   287,   295,   306,   311,   317,
+     323,   329,   335
 };
 #endif
 
@@ -1395,7 +1395,7 @@ yyreduce:
 #line 94 "projet.y" /* yacc.c:1646  */
     {
 														(yyval.code_statement).code   = NULL;
-														struct symbol* chaine=symbol_newtemp(&tds,next_quad);
+														struct symbol* chaine=symbol_newtemp(&tds);
 														chaine->type=STRING_TYPE;
 														chaine->value.string=(yyvsp[-2].val_str);														
 														quad_add(&(yyval.code_statement).code, quad_malloc(&next_quad,_PRINTF,chaine,NULL,NULL));
@@ -1462,26 +1462,27 @@ yyreduce:
 #line 136 "projet.y" /* yacc.c:1646  */
     {	
 		printf("IF '(' expr ')' stmt ENDIF \n");
-		struct quad* is_true;
-		struct quad* is_false;
+		struct quad* is_true=NULL;
+		struct quad* is_false=NULL;
 		
 		struct symbol* label_true= (yyvsp[-1].code_jump);
 		quad_add(&is_true, quad_malloc(&next_quad,':',NULL,NULL,label_true));
-		struct symbol* label_false	= symbol_newtemp(&tds,next_quad);
+		struct symbol* label_false	= symbol_newcst(&tds,next_quad);
 		quad_add(&is_false, quad_malloc(&next_quad,':',NULL,NULL,label_false));
 		
 		quad_list_complete((yyvsp[-3].code_condition).truelist,  label_true);
 		quad_list_complete((yyvsp[-3].code_condition).falselist, label_false);
 		
 		(yyval.code_statement).code = (yyvsp[-3].code_condition).code;
+		quad_add(&(yyval.code_statement).code,(yyvsp[0].code_statement).code);
 		quad_add(&(yyval.code_statement).code,is_true);
 		quad_add(&(yyval.code_statement).code,is_false);
 													}
-#line 1481 "y.tab.c" /* yacc.c:1646  */
+#line 1482 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 14:
-#line 153 "projet.y" /* yacc.c:1646  */
+#line 154 "projet.y" /* yacc.c:1646  */
     {
 														
 		struct symbol* cst_true  	= symbol_add(&tds,"1");
@@ -1493,12 +1494,12 @@ yyreduce:
 		struct symbol* label_true;
 		struct symbol* label_false;
 
-		label_true	= symbol_newtemp(&tds,next_quad);
+		label_true	= symbol_newcst(&tds,next_quad);
 		printf("SWAG \n");
 		quad_add(&is_true, quad_malloc(&next_quad,':',cst_true,NULL,label_true));
 		printf("SWAG2 \n");
 		//	quad_add(&jump,    quad_malloc(&next_quad,_GOTO,NULL,NULL,NULL));
-		label_false	= symbol_newtemp(&tds,next_quad);
+		label_false	= symbol_newcst(&tds,next_quad);
 		printf("SWAG3 \n");
 		quad_add(&is_false, quad_malloc(&next_quad,':',cst_false,NULL,label_false));
 		quad_list_complete((yyvsp[-6].code_condition).truelist,  label_true);
@@ -1511,120 +1512,176 @@ yyreduce:
 		//quad_add(&$$.code,is_false);
 	printf("SWAG5 \n");
 	}
-#line 1515 "y.tab.c" /* yacc.c:1646  */
+#line 1516 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 15:
-#line 182 "projet.y" /* yacc.c:1646  */
+#line 183 "projet.y" /* yacc.c:1646  */
     {printf("'{' stmtlist '}'\n");
 														(yyval.code_statement).code = (yyvsp[-1].code_statement).code;
 														
 													}
-#line 1524 "y.tab.c" /* yacc.c:1646  */
+#line 1525 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 16:
-#line 189 "projet.y" /* yacc.c:1646  */
-    {printf("expr -> expr '<' expr\n");
-							}
-#line 1531 "y.tab.c" /* yacc.c:1646  */
+#line 190 "projet.y" /* yacc.c:1646  */
+    {
+		printf("expr -> expr '<' expr\n");
+		struct quad* goto_true=NULL;
+		struct quad* goto_false=NULL;
+		quad_add(&goto_true,  quad_malloc(&next_quad,_INF,(yyvsp[-2].code_expression).result,(yyvsp[0].code_expression).result,NULL));
+		quad_add(&goto_false, quad_malloc(&next_quad,'G',NULL,NULL,NULL));
+		(yyval.code_condition).truelist		= quad_list_new(goto_true);
+		(yyval.code_condition).falselist	= quad_list_new(goto_false);
+		(yyval.code_condition).code		= (yyvsp[-2].code_expression).code;
+		quad_add(&(yyval.code_condition).code, (yyvsp[0].code_expression).code);
+		quad_add(&(yyval.code_condition).code, goto_true);
+		quad_add(&(yyval.code_condition).code, goto_false);
+
+	}
+#line 1544 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 17:
-#line 191 "projet.y" /* yacc.c:1646  */
+#line 204 "projet.y" /* yacc.c:1646  */
     {	
-								printf("expr -> expr '>' expr\n");
-								struct quad* goto_true;
-								struct quad* goto_false;
-								quad_add(&goto_true,  quad_malloc(&next_quad,_SUP,(yyvsp[-2].code_expression).result,(yyvsp[0].code_expression).result,NULL));
-								quad_add(&goto_false, quad_malloc(&next_quad,'G',NULL,NULL,NULL));
-								(yyval.code_condition).truelist		= quad_list_new(goto_true);
-								(yyval.code_condition).falselist	= quad_list_new(goto_false);
-								(yyval.code_condition).code		= (yyvsp[-2].code_expression).code;
-								quad_add(&(yyval.code_condition).code, (yyvsp[0].code_expression).code);
-								quad_add(&(yyval.code_condition).code, goto_true);
-								quad_add(&(yyval.code_condition).code, goto_false);
+		printf("expr -> expr '>' expr\n");
+		struct quad* goto_true=NULL;
+		struct quad* goto_false=NULL;
+		quad_add(&goto_true,  quad_malloc(&next_quad,_SUP,(yyvsp[-2].code_expression).result,(yyvsp[0].code_expression).result,NULL));
+		quad_add(&goto_false, quad_malloc(&next_quad,'G',NULL,NULL,NULL));
+		(yyval.code_condition).truelist		= quad_list_new(goto_true);
+		(yyval.code_condition).falselist	= quad_list_new(goto_false);
+		(yyval.code_condition).code		= (yyvsp[-2].code_expression).code;
+		quad_add(&(yyval.code_condition).code, (yyvsp[0].code_expression).code);
+		quad_add(&(yyval.code_condition).code, goto_true);
+		quad_add(&(yyval.code_condition).code, goto_false);
 
-							}
-#line 1550 "y.tab.c" /* yacc.c:1646  */
+	}
+#line 1563 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 18:
-#line 205 "projet.y" /* yacc.c:1646  */
-    {printf("expr -> expr '>=' expr\n");
-							}
-#line 1557 "y.tab.c" /* yacc.c:1646  */
+#line 218 "projet.y" /* yacc.c:1646  */
+    {
+		printf("expr -> expr '>=' expr\n");
+		struct quad* goto_true=NULL;
+		struct quad* goto_false=NULL;
+		quad_add(&goto_true,  quad_malloc(&next_quad,_GE,(yyvsp[-2].code_expression).result,(yyvsp[0].code_expression).result,NULL));
+		quad_add(&goto_false, quad_malloc(&next_quad,'G',NULL,NULL,NULL));
+		(yyval.code_condition).truelist		= quad_list_new(goto_true);
+		(yyval.code_condition).falselist	= quad_list_new(goto_false);
+		(yyval.code_condition).code		= (yyvsp[-2].code_expression).code;
+		quad_add(&(yyval.code_condition).code, (yyvsp[0].code_expression).code);
+		quad_add(&(yyval.code_condition).code, goto_true);
+		quad_add(&(yyval.code_condition).code, goto_false);
+	}
+#line 1581 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 19:
-#line 207 "projet.y" /* yacc.c:1646  */
-    {printf("expr -> expr '<=' expr\n");
-							}
-#line 1564 "y.tab.c" /* yacc.c:1646  */
+#line 231 "projet.y" /* yacc.c:1646  */
+    {
+		printf("expr -> expr '<=' expr\n");
+		struct quad* goto_true=NULL;
+		struct quad* goto_false=NULL;
+		quad_add(&goto_true,  quad_malloc(&next_quad,_LE,(yyvsp[-2].code_expression).result,(yyvsp[0].code_expression).result,NULL));
+		quad_add(&goto_false, quad_malloc(&next_quad,'G',NULL,NULL,NULL));
+		(yyval.code_condition).truelist		= quad_list_new(goto_true);
+		(yyval.code_condition).falselist	= quad_list_new(goto_false);
+		(yyval.code_condition).code		= (yyvsp[-2].code_expression).code;
+		quad_add(&(yyval.code_condition).code, (yyvsp[0].code_expression).code);
+		quad_add(&(yyval.code_condition).code, goto_true);
+		quad_add(&(yyval.code_condition).code, goto_false);
+	}
+#line 1599 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 20:
-#line 209 "projet.y" /* yacc.c:1646  */
-    {printf("expr -> expr '!=' expr\n");
-							}
-#line 1571 "y.tab.c" /* yacc.c:1646  */
+#line 244 "projet.y" /* yacc.c:1646  */
+    {
+		printf("expr -> expr '!=' expr\n");
+		struct quad* goto_true=NULL;
+		struct quad* goto_false=NULL;
+		quad_add(&goto_true,  quad_malloc(&next_quad,_NE,(yyvsp[-2].code_expression).result,(yyvsp[0].code_expression).result,NULL));
+		quad_add(&goto_false, quad_malloc(&next_quad,'G',NULL,NULL,NULL));
+		(yyval.code_condition).truelist		= quad_list_new(goto_true);
+		(yyval.code_condition).falselist	= quad_list_new(goto_false);
+		(yyval.code_condition).code		= (yyvsp[-2].code_expression).code;
+		quad_add(&(yyval.code_condition).code, (yyvsp[0].code_expression).code);
+		quad_add(&(yyval.code_condition).code, goto_true);
+		quad_add(&(yyval.code_condition).code, goto_false);
+	}
+#line 1617 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 21:
-#line 211 "projet.y" /* yacc.c:1646  */
-    {printf("expr -> expr '==' expr\n");
-							}
-#line 1578 "y.tab.c" /* yacc.c:1646  */
+#line 257 "projet.y" /* yacc.c:1646  */
+    {
+		printf("expr -> expr '==' expr\n");
+		struct quad* goto_true=NULL;
+		struct quad* goto_false=NULL;
+		quad_add(&goto_true,  quad_malloc(&next_quad,_EQ,(yyvsp[-2].code_expression).result,(yyvsp[0].code_expression).result,NULL));
+		quad_add(&goto_false, quad_malloc(&next_quad,'G',NULL,NULL,NULL));
+		(yyval.code_condition).truelist		= quad_list_new(goto_true);
+		(yyval.code_condition).falselist	= quad_list_new(goto_false);
+		(yyval.code_condition).code		= (yyvsp[-2].code_expression).code;
+		quad_add(&(yyval.code_condition).code, (yyvsp[0].code_expression).code);
+		quad_add(&(yyval.code_condition).code, goto_true);
+		quad_add(&(yyval.code_condition).code, goto_false);
+	}
+#line 1635 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 22:
-#line 213 "projet.y" /* yacc.c:1646  */
-    {	(yyval.code_jump) = symbol_newtemp(&tds,next_quad);
+#line 270 "projet.y" /* yacc.c:1646  */
+    {	(yyval.code_jump) = symbol_newcst(&tds,next_quad);
 			}
-#line 1585 "y.tab.c" /* yacc.c:1646  */
+#line 1642 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 23:
-#line 216 "projet.y" /* yacc.c:1646  */
+#line 273 "projet.y" /* yacc.c:1646  */
     {	(yyval.code_goto).code = quad_malloc(&next_quad,_GOTO,NULL,NULL,NULL);
-			(yyval.code_goto).quad = symbol_newtemp(&tds,next_quad);
+			(yyval.code_goto).quad = symbol_newcst(&tds,next_quad);
 			(yyval.code_goto).nextlist = quad_list_new((yyval.code_goto).code);
 			}
-#line 1594 "y.tab.c" /* yacc.c:1646  */
+#line 1651 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 24:
-#line 222 "projet.y" /* yacc.c:1646  */
+#line 279 "projet.y" /* yacc.c:1646  */
     {	printf("expr -> NUMBER\n");
 								
-								(yyval.code_expression).result = symbol_newtemp(&tds,next_quad);
+								(yyval.code_expression).result = symbol_newtemp(&tds);
 								(yyval.code_expression).result->type = INTEGER_TYPE;
 								(yyval.code_expression).result->isconstant = true;
 								(yyval.code_expression).result->value.integer = (yyvsp[0].val_num);
 								(yyval.code_expression).code = NULL;
 							}
-#line 1607 "y.tab.c" /* yacc.c:1646  */
+#line 1664 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 25:
-#line 230 "projet.y" /* yacc.c:1646  */
+#line 287 "projet.y" /* yacc.c:1646  */
     {	printf("expr -> REAL\n");
 								
-								(yyval.code_expression).result = symbol_newtemp(&tds,next_quad);
+								(yyval.code_expression).result = symbol_newtemp(&tds);
 								(yyval.code_expression).result->type = REAL_TYPE;
 								(yyval.code_expression).result->isconstant = true;							
 								(yyval.code_expression).result->value.real = (yyvsp[0].val_real);							
 								(yyval.code_expression).code = NULL;
 							}
-#line 1620 "y.tab.c" /* yacc.c:1646  */
+#line 1677 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 26:
-#line 238 "projet.y" /* yacc.c:1646  */
+#line 295 "projet.y" /* yacc.c:1646  */
     {	        
 								struct symbol* lookup = symbol_lookup(&tds,(yyvsp[0].val_str));
 								if(lookup==NULL){
-								 (yyval.code_expression).result = symbol_newtemp(&tds,next_quad);
+								 (yyval.code_expression).result = symbol_add(&tds,(yyvsp[0].val_str));
 								 (yyval.code_expression).result->id = (yyvsp[0].val_str);
 								 (yyval.code_expression).code = NULL;
 								}
@@ -1632,74 +1689,74 @@ yyreduce:
 								 (yyval.code_expression).result = lookup;
 								}
 							}
-#line 1636 "y.tab.c" /* yacc.c:1646  */
+#line 1693 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 27:
-#line 249 "projet.y" /* yacc.c:1646  */
+#line 306 "projet.y" /* yacc.c:1646  */
     {	printf("expr -> - expr\n");
-								(yyval.code_expression).result	= symbol_newtemp(&tds,next_quad);
+								(yyval.code_expression).result	= symbol_newtemp(&tds);
 								(yyval.code_expression).code	= (yyvsp[0].code_expression).code;
 								quad_add(&(yyval.code_expression).code, quad_malloc(&next_quad,_UNMIN,(yyvsp[0].code_expression).result,NULL,(yyval.code_expression).result));
 							}
-#line 1646 "y.tab.c" /* yacc.c:1646  */
+#line 1703 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 28:
-#line 254 "projet.y" /* yacc.c:1646  */
+#line 311 "projet.y" /* yacc.c:1646  */
     {	printf("expr -> expr + expr\n");
-								(yyval.code_expression).result	= symbol_newtemp(&tds,next_quad);
+								(yyval.code_expression).result	= symbol_newtemp(&tds);
 								(yyval.code_expression).code	= (yyvsp[-2].code_expression).code;
 								quad_add(&(yyval.code_expression).code,(yyvsp[0].code_expression).code);
 								quad_add(&(yyval.code_expression).code, quad_malloc(&next_quad,_PLUS,(yyvsp[-2].code_expression).result,(yyvsp[0].code_expression).result,(yyval.code_expression).result));
 							}
-#line 1657 "y.tab.c" /* yacc.c:1646  */
+#line 1714 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 29:
-#line 260 "projet.y" /* yacc.c:1646  */
+#line 317 "projet.y" /* yacc.c:1646  */
     {	printf("expr -> expr '-' expr\n");
-								(yyval.code_expression).result	= symbol_newtemp(&tds,next_quad);
+								(yyval.code_expression).result	= symbol_newtemp(&tds);
 								(yyval.code_expression).code	= (yyvsp[-2].code_expression).code;
 								quad_add(&(yyval.code_expression).code,(yyvsp[0].code_expression).code);
 								quad_add(&(yyval.code_expression).code, quad_malloc(&next_quad,_MOINS,(yyvsp[-2].code_expression).result,(yyvsp[0].code_expression).result,(yyval.code_expression).result));
 							}
-#line 1668 "y.tab.c" /* yacc.c:1646  */
+#line 1725 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 30:
-#line 266 "projet.y" /* yacc.c:1646  */
+#line 323 "projet.y" /* yacc.c:1646  */
     {	printf("expr -> expr '*' expr\n");
-								(yyval.code_expression).result	= symbol_newtemp(&tds,next_quad);
+								(yyval.code_expression).result	= symbol_newtemp(&tds);
 								(yyval.code_expression).code	= (yyvsp[-2].code_expression).code;
 								quad_add(&(yyval.code_expression).code,(yyvsp[0].code_expression).code);
 								quad_add(&(yyval.code_expression).code, quad_malloc(&next_quad,_MUL,(yyvsp[-2].code_expression).result,(yyvsp[0].code_expression).result,(yyval.code_expression).result));
 							}
-#line 1679 "y.tab.c" /* yacc.c:1646  */
+#line 1736 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 31:
-#line 272 "projet.y" /* yacc.c:1646  */
+#line 329 "projet.y" /* yacc.c:1646  */
     {	printf("expr -> expr '/' expr\n");
-								(yyval.code_expression).result = symbol_newtemp(&tds,next_quad);
+								(yyval.code_expression).result = symbol_newtemp(&tds);
 								(yyval.code_expression).code = (yyvsp[-2].code_expression).code;
 								quad_add(&(yyval.code_expression).code,(yyvsp[0].code_expression).code);
 								quad_add(&(yyval.code_expression).code, quad_malloc(&next_quad,_DIV,(yyvsp[-2].code_expression).result,(yyvsp[0].code_expression).result,(yyval.code_expression).result));
 							}
-#line 1690 "y.tab.c" /* yacc.c:1646  */
+#line 1747 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 32:
-#line 278 "projet.y" /* yacc.c:1646  */
+#line 335 "projet.y" /* yacc.c:1646  */
     {	printf("expr -> '(' expr ')'\n");
 								(yyval.code_expression).result	= (yyvsp[-1].code_expression).result;
 								(yyval.code_expression).code	= (yyvsp[-1].code_expression).code;
 							}
-#line 1699 "y.tab.c" /* yacc.c:1646  */
+#line 1756 "y.tab.c" /* yacc.c:1646  */
     break;
 
 
-#line 1703 "y.tab.c" /* yacc.c:1646  */
+#line 1760 "y.tab.c" /* yacc.c:1646  */
       default: break;
     }
   /* User semantic actions sometimes alter yychar, and that requires
@@ -1927,7 +1984,7 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 286 "projet.y" /* yacc.c:1906  */
+#line 343 "projet.y" /* yacc.c:1906  */
 
 
 int main(int argc, char* argv[])

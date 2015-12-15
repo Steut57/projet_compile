@@ -32,7 +32,8 @@ struct symbol{
 };
 
 struct symbol* 	symbol_alloc();
-struct symbol* 	symbol_newtemp(struct symbol** tds,int next_quad);
+struct symbol* symbol_newcst(struct symbol** tds,int next_quad);
+struct symbol* 	symbol_newtemp(struct symbol** tds);
 struct symbol* 	symbol_add(struct symbol** tds, char* id);
 void		symbol_print(struct symbol** tds);
 struct symbol* symbol_lookup(struct symbol** tds,char* id);

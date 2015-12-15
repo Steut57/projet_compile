@@ -58,7 +58,7 @@ void quad_print(struct quad* list){
 			case '<':
 				s = "<";
 				break;
-			case '>':
+			case _SUP:
 				s = ">";
 				break;
 			case _PLUS:
@@ -70,6 +70,12 @@ void quad_print(struct quad* list){
 			case _GOTO:
 				s = "goto";
 				break;
+			case 'G':
+				s = "G";
+				break;
+			case ':':
+				s = ":";
+				break;
 			case _PRINT:
 				s = "print";
 				break;
@@ -80,12 +86,12 @@ void quad_print(struct quad* list){
 				s = "UNKNOWN";
 		}
 		printf(" %s\t", s);
-		if(list->arg1 != NULL) printf("%s\t",list->arg1->id);
-		else printf("vide\t");
-		if(list->arg2 != NULL) printf("%s\t",list->arg2->id);
-		else printf("vide\t");
-		if(list->res != NULL) printf("%s\t",list->res->id);
-		else printf("vide\t");
+		if(list->arg1 != NULL) printf(" %s \t",list->arg1->id);
+		else printf(" vide\t");
+		if(list->arg2 != NULL) printf(" %s \t",list->arg2->id);
+		else printf(" vide\t");
+		if(list->res != NULL) printf(" %s \t",list->res->id);
+		else printf(" vide\t");
 
 
 		printf("\n");
